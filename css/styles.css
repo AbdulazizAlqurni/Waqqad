@@ -1,0 +1,256 @@
+@font-face {
+    font-family: 'Saudi';
+    src: url('../assets/fonts/Saudi-Bold.ttf') format('truetype');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'Mokhtar';
+    src: url('../assets/fonts/mokhtar_bold.ttf') format('truetype');
+    font-weight: bold;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: 'Saudi', sans-serif;
+    color: #fff;
+    background: #000;
+}
+
+.container {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #B57EDC;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: visible;
+}
+
+.container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMTkuNSIgbnVtT2N0YXZlcz0iMTAiIHJlc3VsdD0idHVyYnVsZW5jZSIvPjxmZUNvbXBvc2l0ZSBvcGVyYXRvcj0iaW4iIGluPSJ0dXJidWxlbmNlIiBpbjI9IlNvdXJjZUFscGhhIiByZXN1bHQ9ImNvbXBvc2l0ZSIvPjxmZUNvbG9yTWF0cml4IGluPSJjb21wb3NpdGUiIHR5cGU9Imx1bWluYW5jZVRvQWxwaGEiLz48ZmVCbGVuZCBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJjb21wb3NpdGUiIG1vZGU9ImNvbG9yLWJ1cm4iLz48L2ZpbHRlcj48L2RlZnM+PGcgZmlsdGVyPSJ1cmwoJyNhJykiPjxwYXRoIGZpbGw9IiMyNmIiIGQ9Ik0wIDBoMTAwdjEwMEgweiIvPjxwYXRoIGQ9Ik0wIDB2MTAwaDEwMFYwWiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiM0OGYiIGZpbGw9IiMwMDAwIi8+PHBhdGggZmlsbD0iIzQ4ZjUiIGQ9Ik01MCAwaDF2MTAwaC0xeiIvPjxwYXRoIGZpbGw9IiM0OGY1IiBkPSJNMCA1MGgxMDB2MUgweiIvPjwvZz48L3N2Zz4=") repeat;
+
+    mask: linear-gradient(#0004, #000);
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.container>* {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    text-align: center;
+    padding: 1rem;
+}
+
+.logo {
+    width: 100px;
+    margin: 1rem auto;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+p {
+    font-size: 1rem;
+    line-height: 1.5;
+    max-width: 600px;
+    margin: 0.5rem auto;
+}
+
+
+#join-btn {
+    font-family: 'Saudi', sans-serif;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#join-btn:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    h1 {
+        font-size: 3rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    p {
+        font-size: 1.125rem;
+    }
+
+    #join-btn {
+        font-size: 1.125rem;
+        padding: 1rem 2rem;
+    }
+}
+
+
+header#hero {
+    padding: 3rem 1rem;
+}
+
+.logo-wrapper {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.1rem;
+    border-radius: 50%;
+    margin-bottom: 0.2rem;
+}
+
+.logo {
+    width: 250px;
+    height: auto;
+    display: block;
+}
+
+header#hero h1 {
+    font-size: 3rem;
+    margin: 1rem 0 0.5rem;
+}
+
+header#hero .tagline {
+    font-size: 1.25rem;
+    opacity: 0.9;
+}
+
+.quote {
+    margin: 1.5rem auto;
+    max-width: 600px;
+    padding: 1rem 1.5rem;
+    background: rgba(0, 0, 0, 0.15);
+    border-right: 4px solid rgba(255, 255, 255, 0.7);
+    font-style: italic;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    text-align: right;
+    position: relative;
+}
+
+.quote::before {
+    content: "“";
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.7);
+    position: absolute;
+    top: -0.5rem;
+    right: 1rem;
+}
+
+.quote cite {
+    display: block;
+    margin-top: 0.75rem;
+    font-family: 'Saudi', sans-serif;
+    font-size: 1rem;
+    font-style: normal;
+    opacity: 0.8;
+}
+
+#about {
+    padding: 2rem 1rem;
+}
+
+#about h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+#about p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.specialties {
+    margin: 1.5rem auto;
+    max-width: 700px;
+}
+
+.specialties h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.specialties ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.specialties ul li {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+footer {
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+.whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #25D366;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: 'Saudi', sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.whatsapp-btn:hover {
+    background-color: #1DA851;
+}
+
+.wh-icon {
+    width: 24px;
+    height: auto;
+}
