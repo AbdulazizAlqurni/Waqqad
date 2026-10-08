@@ -1,0 +1,315 @@
+<title>Waqqad Logo Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a review board. Sticky round bar, then one board per direction:
+   stages (light / navy), size ladder, in-context mockups, then the notes. */
+:root {
+  --paper: #F3F5F8;      /* brand Mist */
+  --card: #FFFFFF;
+  --ink: #0B1F3A;        /* brand Navy */
+  --muted: #5A6B82;
+  --line: #DCE2EA;
+  --teal: #007C91;
+  --amber: #F2A93B;
+  --navy: #0B1F3A;
+  --stage-light: #FFFFFF;
+  --chip: #E8EDF3;
+  --font-ar: "IBM Plex Sans Arabic", "Noto Sans Arabic", Tahoma, sans-serif;
+  --font-en: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #071426; --card: #0D1C33; --ink: #E7ECF3; --muted: #93A3B8;
+    --line: #1E3150; --teal: #4FB8C9; --chip: #15284A; --stage-light: #F3F5F8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #071426; --card: #0D1C33; --ink: #E7ECF3; --muted: #93A3B8;
+  --line: #1E3150; --teal: #4FB8C9; --chip: #15284A; --stage-light: #F3F5F8;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 15px/1.55 var(--font-en); margin: 0; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 0 64px; }
+.ar { font-family: var(--font-ar); }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+.mono { font-family: var(--font-mono); font-size: 12px; letter-spacing: .02em; }
+
+/* round bar */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.bar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding-block: 12px; }
+.brandline { display: flex; align-items: baseline; gap: 10px; margin-inline-end: auto; }
+.brandline b { font: 700 20px/1 var(--font-ar); }
+.brandline span { color: var(--muted); font-size: 13px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--card); }
+.seg button { font: 500 13px var(--font-en); color: var(--muted); background: none; border: 0; padding: 7px 12px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.seg button:focus-visible, .chip:focus-visible, .copy:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.jump { display: flex; gap: 6px; }
+.jump a { font: 600 13px var(--font-en); color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; background: var(--card); }
+
+/* intro */
+.intro { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; padding-block: 40px 28px; align-items: end; }
+.intro h1 { font: 600 34px/1.15 var(--font-en); letter-spacing: -.01em; }
+.intro p { color: var(--muted); max-width: 62ch; margin: 12px 0 0; }
+.palette { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.sw { border-radius: 8px; height: 64px; padding: 8px; display: flex; flex-direction: column; justify-content: flex-end; font: 500 11px/1.3 var(--font-mono); border: 1px solid var(--line); }
+.sw.flag { outline: 2px dashed var(--amber); outline-offset: 2px; }
+
+/* direction board */
+.dir { border-top: 1px solid var(--line); padding-block: 40px 8px; scroll-margin-top: 70px; }
+.dir-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin-bottom: 20px; }
+.letter { font: 600 13px var(--font-mono); background: var(--ink); color: var(--paper); border-radius: 6px; padding: 3px 9px; }
+.dir-head h2 { font: 600 26px/1.2 var(--font-en); }
+.dir-head h2 .ar { font-weight: 700; margin-inline-start: 6px; }
+.dir-head .score { margin-inline-start: auto; color: var(--muted); font: 500 13px var(--font-mono); }
+.dir-head .idea { flex-basis: 100%; color: var(--muted); max-width: 70ch; margin: 0; }
+
+.stages { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.stage { border-radius: 12px; min-height: 260px; display: grid; place-items: center; padding: 28px; position: relative; }
+.stage.light { background: var(--stage-light); border: 1px solid var(--line); }
+.stage.dark { background: var(--navy); }
+.stage img { max-width: 100%; max-height: 210px; width: auto; height: auto; display: block; }
+.stage .tag { position: absolute; inset-block-start: 10px; inset-inline-start: 12px; font: 500 11px var(--font-mono); color: #8494AA; }
+.missing { font: 500 13px var(--font-mono); color: #8494AA; border: 1px dashed currentColor; border-radius: 8px; padding: 10px 14px; text-align: center; }
+
+.subhead { font: 600 12px var(--font-en); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 28px 0 10px; }
+.row { display: grid; gap: 12px; }
+.ladder { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.ladder > div { border-radius: 12px; padding: 18px 18px 12px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 18px 22px; }
+.ladder .l { background: var(--stage-light); border: 1px solid var(--line); }
+.ladder .d { background: #DFE5ED; }
+.ladder figure { margin: 0; display: grid; justify-items: center; gap: 6px; }
+.ladder figcaption { font: 500 10px var(--font-mono); color: #8494AA; }
+.ladder img { display: block; image-rendering: auto; }
+
+/* contexts */
+.ctx { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; }
+.ctx > * { border-radius: 12px; min-width: 0; }
+.site { grid-column: span 12; background: #fff; border: 1px solid var(--line); overflow: hidden; }
+.site .chrome { background: #E9EDF2; display: flex; align-items: center; gap: 8px; padding: 8px 12px 0; }
+.site .tab { background: #fff; border-radius: 8px 8px 0 0; padding: 7px 12px; display: flex; align-items: center; gap: 8px; font: 12px var(--font-ar); color: #0B1F3A; max-width: 260px; }
+.site .tab img { width: 16px; height: 16px; }
+.site .dots { display: flex; gap: 5px; margin-inline-end: 6px; }
+.site .dots i { width: 9px; height: 9px; border-radius: 50%; background: #C7CFDA; display: block; }
+.site header { direction: rtl; display: flex; align-items: center; gap: 24px; padding: 16px 24px; border-bottom: 1px solid #E6EAF0; flex-wrap: wrap; }
+.site header img { height: 40px; width: auto; }
+.site nav { display: flex; gap: 20px; font: 500 14px var(--font-ar); color: #0B1F3A; margin-inline-end: auto; flex-wrap: wrap; }
+.site .cta { font: 600 13px var(--font-ar); background: #007C91; color: #fff; border-radius: 8px; padding: 8px 14px; }
+.site .hero { direction: rtl; padding: 28px 24px 34px; font-family: var(--font-ar); color: #0B1F3A; }
+.site .hero b { display: block; font-size: 24px; font-weight: 700; }
+.site .hero span { color: #5A6B82; font-size: 14px; }
+
+.card-mock { grid-column: span 5; background: var(--navy); aspect-ratio: 85 / 55; max-width: 100%; padding: 7%; display: flex; flex-direction: column; justify-content: space-between; direction: rtl; color: #fff; box-shadow: 0 10px 30px -18px rgba(11, 31, 58, .7); }
+.card-mock img { height: 30%; width: auto; max-width: 70%; align-self: flex-start; }
+.card-mock .who { font: 13px/1.5 var(--font-ar); }
+.card-mock .who b { display: block; font-size: 15px; }
+.card-mock .who .en { font-family: var(--font-en); color: #9FB0C6; font-size: 12px; }
+.card-mock .who .url { color: #7FD1DE; font-family: var(--font-en); font-size: 12px; }
+
+.phone { grid-column: span 4; background: linear-gradient(160deg, #1D3557, #0B1F3A 60%, #00303A); padding: 20px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 10px; align-content: start; }
+.phone .app { display: grid; justify-items: center; gap: 4px; font: 10px var(--font-ar); color: #E7ECF3; }
+.phone .app i { width: 48px; height: 48px; border-radius: 12px; background: rgba(255, 255, 255, .16); display: block; }
+.phone .app img { width: 48px; height: 48px; display: block; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .35)); }
+
+.chat { grid-column: span 3; background: var(--card); border: 1px solid var(--line); padding: 14px; display: grid; gap: 10px; align-content: start; }
+.chat .row1 { display: flex; align-items: center; gap: 10px; direction: rtl; }
+.chat .av { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; flex: none; background: var(--navy); }
+.chat .av img { width: 100%; height: 100%; display: block; }
+.chat .t { font: 600 14px var(--font-ar); }
+.chat .s { font: 12px var(--font-ar); color: var(--muted); }
+
+.stamp { grid-column: span 12; background: #FBFAF6; border: 1px solid var(--line); padding: 22px 26px; display: flex; gap: 28px; align-items: center; flex-wrap: wrap; direction: rtl; }
+.stamp .doc { font: 13px/1.9 var(--font-ar); color: #3A4658; flex: 1 1 280px; min-width: 0; }
+.stamp .doc b { color: #0B1F3A; }
+.stamp .seal { border: 2.5px solid #1F3A73; border-radius: 10px; padding: 12px 18px; transform: rotate(-5deg); opacity: .82; mix-blend-mode: multiply; display: grid; justify-items: center; gap: 4px; }
+.stamp .seal img { height: 54px; width: auto; filter: url(#ink); }
+.stamp .seal span { font: 600 11px var(--font-ar); color: #1F3A73; }
+
+/* notes */
+.notes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-top: 28px; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; min-width: 0; }
+.panel h3 { font: 600 15px var(--font-en); margin-bottom: 10px; display: flex; gap: 8px; align-items: center; }
+.panel h3 .dot { width: 8px; height: 8px; border-radius: 50%; }
+.panel ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.panel li { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 8px; }
+.panel li .id { font: 600 12px var(--font-mono); color: var(--teal); padding-top: 2px; }
+.panel li p { margin: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip { font: 500 12px var(--font-en); border: 1px solid var(--line); background: var(--chip); color: var(--ink); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--amber); border-color: var(--amber); color: #0B1F3A; }
+
+.reply { margin-top: 40px; background: var(--navy); color: #E7ECF3; border-radius: 14px; padding: 22px 24px; display: grid; gap: 12px; }
+.reply h2 { font: 600 20px var(--font-en); }
+.reply p { margin: 0; color: #9FB0C6; max-width: 70ch; }
+.reply textarea { width: 100%; min-height: 110px; resize: vertical; border-radius: 10px; border: 1px solid #23406B; background: #0F2747; color: #fff; font: 13px/1.6 var(--font-mono); padding: 12px; }
+.copy { justify-self: start; font: 600 13px var(--font-en); background: var(--amber); color: #0B1F3A; border: 0; border-radius: 8px; padding: 9px 16px; cursor: pointer; }
+
+@media (max-width: 860px) {
+  .intro, .stages, .ladder, .notes { grid-template-columns: minmax(0, 1fr); }
+  .card-mock, .phone, .chat { grid-column: span 12; }
+  .palette { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: no-preference) { .stage img { transition: opacity .2s; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="ink"><feColorMatrix type="matrix" values="0 0 0 0 0.12  0 0 0 0 0.23  0 0 0 0 0.45  0 0 0 1 0"/></filter>
+</svg>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="brandline"><b>وقّاد</b><span>Logo Lab · Round 1 · 8 Oct 2026</span></div>
+    <div class="seg" role="group" aria-label="Version">
+      <button id="v-v1" data-v="v1" aria-pressed="true">Round 1</button>
+      <button id="v-v0" data-v="v0" aria-pressed="false">As received</button>
+    </div>
+    <nav class="jump" aria-label="Directions"><a href="#A">A</a><a href="#B">B</a><a href="#C">C</a><a href="#reply">Reply</a></nav>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="intro">
+    <div>
+      <h1>Three directions, one spark. Every size, every surface.</h1>
+      <p>Each direction is shown on paper and on navy, from 16&nbsp;px up, and in the places it will live: a browser tab, a phone, a WhatsApp chat, a business card and a stamped contract. Switch between <b>Round&nbsp;1</b> (my fixes) and <b>As received</b> to see what changed. Pick options under each direction and copy your reply at the bottom.</p>
+    </div>
+    <div class="palette" id="palette"></div>
+  </section>
+  <div id="dirs"></div>
+  <section class="reply" id="reply">
+    <h2>Your reply for round 2</h2>
+    <p>Write what you like and what bothers you. Your picks from above are added underneath. Then copy it all into our chat.</p>
+    <textarea id="reply-note" aria-label="Your notes" placeholder="Leading direction, what you like, what bothers you…"></textarea>
+    <pre id="reply-text" class="mono" style="margin:0;white-space:pre-wrap;color:#C9D5E4"></pre>
+    <button class="copy" id="copy">Copy reply</button>
+  </section>
+</div>
+
+<script>
+const DATA = /*DATA*/{};
+const NOTES = /*NOTES*/{};
+
+const uri = s => "data:image/svg+xml;charset=utf-8," + encodeURIComponent(s);
+let version = "v1";
+try { version = localStorage.getItem("lab-version") || "v1"; } catch (e) {}
+let picks = {};
+try { picks = JSON.parse(localStorage.getItem("lab-picks") || "{}"); } catch (e) {}
+
+function img(key, attrs = "") {
+  const svg = DATA[version][key];
+  if (!svg) return `<div class="missing">${key}<br>not in ${version === "v0" ? "the drafts" : "this round"}</div>`;
+  return `<img src="${uri(svg)}" alt="${key.replace(/_/g, " ")}" ${attrs}>`;
+}
+
+function palette() {
+  const sw = [
+    ["Navy", "#0B1F3A", "#fff"], ["Teal", "#007C91", "#fff"], ["Amber", "#F2A93B", "#0B1F3A"],
+    ["Mist", "#F3F5F8", "#0B1F3A"], ["Teal Light?", "#7FD1DE", "#0B1F3A", true],
+  ];
+  document.getElementById("palette").innerHTML = sw.map(([n, h, c, f]) =>
+    `<div class="sw${f ? " flag" : ""}" style="background:${h};color:${c}" title="${f ? "Used in the drafts on navy but missing from the palette (see S-1)" : ""}"><b>${n}</b>${h}</div>`).join("");
+}
+
+function ladder(key, bgClass) {
+  return [16, 24, 32, 48, 64, 96].map(px =>
+    `<figure>${img(key, `width="${px}" height="${px}" style="width:${px}px;height:${px}px"`)}<figcaption>${px}</figcaption></figure>`).join("");
+}
+
+function dirHTML(d) {
+  const n = NOTES[d];
+  const k = n.keys;
+  const site = `<div class="site">
+      <div class="chrome"><span class="dots"><i></i><i></i><i></i></span><div class="tab">${img(k.icon, 'width="16" height="16"')}<span>وقّاد · نظام الجمعيات</span></div></div>
+      <header>${img(k.lockup)}<nav><span>الرئيسية</span><span>معكم</span><span>الحلول</span><span>عن وقّاد</span></nav><span class="cta">اطلب عرضاً</span></header>
+      <div class="hero"><b>نظام الجمعيات المبني للحوكمة</b><span>أنظمة تصمد أمام التدقيق</span></div>
+    </div>`;
+  const card = `<div class="card-mock">${img(k.lockupDark)}<div class="who"><b>عبدالعزيز القرني</b>الشريك المدير <span class="en">· Managing Partner</span><br><span class="url">waqqad.sa</span></div></div>`;
+  const apps = ["التقويم", "البريد", "الصور", "الخرائط", "الملاحظات", "", "الطقس", "الإعدادات"];
+  const phone = `<div class="phone">${apps.map(a => a === "" ? `<div class="app">${img(k.icon)}<span>وقّاد</span></div>` : `<div class="app"><i></i><span>${a}</span></div>`).join("")}</div>`;
+  const chat = `<div class="chat">
+      <div class="row1"><div class="av">${img(k.icon)}</div><div><div class="t">وقّاد</div><div class="s">حساب أعمال · متصل</div></div></div>
+      <div class="row1"><div class="av" style="width:28px;height:28px">${img(k.icon)}</div><div class="s">تم إرسال العرض الفني والمالي</div></div>
+    </div>`;
+  const stamp = `<div class="stamp">
+      <div class="doc"><b>عقد تقديم خدمات تقنية</b><br>يلتزم الطرف الثاني (وقّاد) بتسليم المرحلة الأولى خلال ستين يوماً من تاريخ توقيع هذا العقد، وفق نطاق العمل الموضح في الملحق (أ).</div>
+      <div class="seal">${img(k.mono)}<span>معتمد</span></div>
+    </div>`;
+
+  const list = (items, open) => `<ul>${items.map(it => `<li><span class="id">${it.id}</span><div><p>${it.text}</p>${open && it.options ? `<div class="chips" role="group" aria-label="${it.id} options">${it.options.map((o, i) =>
+      `<button class="chip" id="chip-${it.id}-${i}" data-q="${it.id}" data-o="${o}" aria-pressed="${picks[it.id] === o}">${o}</button>`).join("")}</div>` : ""}</div></li>`).join("")}</ul>`;
+
+  return `<section class="dir" id="${d}">
+    <div class="dir-head"><span class="letter">${d}</span><h2>${n.name}<span class="ar">${n.ar}</span></h2><span class="score">Brief score ${n.score}/30</span><p class="idea">${n.idea}</p></div>
+    <div class="stages">
+      <div class="stage light"><span class="tag">${k.lockup}.svg</span>${img(k.lockup)}</div>
+      <div class="stage dark"><span class="tag">${k.lockupDark}.svg</span>${img(k.lockupDark)}</div>
+    </div>
+    <div class="subhead">Small sizes in px · ${k.mark} on white, ${k.icon} as an app icon</div>
+    <div class="ladder"><div class="l">${ladder(k.mark)}</div><div class="d">${ladder(k.icon)}</div></div>
+    <div class="subhead">In context</div>
+    <div class="ctx">${site}${card}${phone}${chat}${stamp}</div>
+    <div class="notes">
+      <div class="panel"><h3><span class="dot" style="background:var(--teal)"></span>Fixed in round 1</h3>${list(n.fixed, false)}</div>
+      <div class="panel"><h3><span class="dot" style="background:var(--amber)"></span>Your call</h3>${list(n.open, true)}</div>
+    </div>
+  </section>`;
+}
+
+function render() {
+  document.getElementById("dirs").innerHTML = ["A", "B", "C", "S"].map(d => d === "S" ? systemHTML() : dirHTML(d)).join("");
+  document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === version));
+  replyText();
+}
+
+function systemHTML() {
+  const n = NOTES.S;
+  return `<section class="dir" id="S"><div class="dir-head"><span class="letter">S</span><h2>Shared system</h2><p class="idea">${n.idea}</p></div>
+    <div class="notes"><div class="panel"><h3><span class="dot" style="background:var(--teal)"></span>Fixed in round 1</h3><ul>${n.fixed.map(it => `<li><span class="id">${it.id}</span><div><p>${it.text}</p></div></li>`).join("")}</ul></div>
+    <div class="panel"><h3><span class="dot" style="background:var(--amber)"></span>Your call</h3><ul>${n.open.map(it => `<li><span class="id">${it.id}</span><div><p>${it.text}</p><div class="chips">${it.options.map((o, i) =>
+      `<button class="chip" id="chip-${it.id}-${i}" data-q="${it.id}" data-o="${o}" aria-pressed="${picks[it.id] === o}">${o}</button>`).join("")}</div></div></li>`).join("")}</ul></div></div></section>`;
+}
+
+function replyText() {
+  const order = ["A", "B", "C", "S"].flatMap(d => NOTES[d].open.map(o => o.id));
+  const lines = order.filter(id => picks[id]).map(id => `${id}: ${picks[id]}`);
+  document.getElementById("reply-text").textContent = lines.length ? lines.join("\n") : "(no options picked yet)";
+}
+function fullReply() {
+  const note = document.getElementById("reply-note").value.trim();
+  const picksText = document.getElementById("reply-text").textContent;
+  return (note ? note + "\n\n" : "") + "Logo Lab round 1 picks:\n" + picksText;
+}
+
+document.addEventListener("click", e => {
+  const seg = e.target.closest(".seg button");
+  if (seg) { version = seg.dataset.v; try { localStorage.setItem("lab-version", version); } catch (x) {} render(); return; }
+  const chip = e.target.closest(".chip");
+  if (chip) {
+    const q = chip.dataset.q, o = chip.dataset.o;
+    picks[q] = picks[q] === o ? undefined : o;
+    if (!picks[q]) delete picks[q];
+    try { localStorage.setItem("lab-picks", JSON.stringify(picks)); } catch (x) {}
+    document.querySelectorAll(`.chip[data-q="${q}"]`).forEach(c => c.setAttribute("aria-pressed", picks[q] === c.dataset.o));
+    replyText();
+    return;
+  }
+  if (e.target.id === "copy") {
+    const btn = e.target;
+    const done = () => { btn.textContent = "Copied"; setTimeout(() => btn.textContent = "Copy reply", 1600); };
+    const fallback = () => { const ta = document.getElementById("reply-note"); ta.value = fullReply(); ta.select(); btn.textContent = "Selected, press Ctrl+C"; };
+    try { navigator.clipboard.writeText(fullReply()).then(done, fallback); } catch (x) { fallback(); }
+  }
+});
+
+const noteEl = document.getElementById("reply-note");
+try { noteEl.value = localStorage.getItem("lab-note") || ""; } catch (e) {}
+noteEl.addEventListener("input", () => { try { localStorage.setItem("lab-note", noteEl.value); } catch (e) {} });
+palette();
+render();
+</script>
