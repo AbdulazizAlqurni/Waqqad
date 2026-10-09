@@ -105,3 +105,17 @@
 @media (prefers-reduced-motion: reduce) {
   .wq *, .wq { animation: none !important; transition: none !important; }
 }
+
+/* ---------- round 3: rising embers */
+.wq-rising:is(:hover, .wq-hover) .wq-c { transform: translateY(-8px); }
+.wq-rising:is(:hover, .wq-hover) .wq-c2 { transform: translateY(-13px); }
+.wq-rising:is(:hover, .wq-hover) .wq-c3 { transform: translateY(-19px); }
+.wq-loop.wq-rising .wq-c { animation: wq-rise-ember 2.6s ease-in infinite; }
+.wq-loop.wq-rising .wq-c2 { animation-delay: .45s; }
+.wq-loop.wq-rising .wq-c3 { animation-delay: .9s; }
+@keyframes wq-rise-ember {
+  0% { transform: translate(calc(var(--dx) * -.7), calc(var(--dy) * -.7)) scale(.3); opacity: 0; }
+  20% { opacity: 1; }
+  65% { transform: none; opacity: 1; }
+  100% { transform: translateY(-14px) scale(.5); opacity: 0; }
+}

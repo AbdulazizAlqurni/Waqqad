@@ -3,18 +3,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: a review board. Sticky round bar, then three boards:
-   the logo (picks applied), the spark (five motions), the type (five voices). */
+/* Layout: a review board for the symbol alone. Ignite hero first, then the
+   flame forms, then the symbol at work on a site and in a video, then the calls. */
 :root {
-  --paper: #F3F5F8;      /* brand Mist */
+  --paper: #F3F5F8;
   --card: #FFFFFF;
-  --ink: #0B1F3A;        /* brand Navy */
+  --ink: #0B1F3A;
   --muted: #5A6B82;
   --line: #DCE2EA;
   --teal: #007C91;
   --amber: #F2A93B;
   --navy: #0B1F3A;
-  --stage-light: #FFFFFF;
   --chip: #E8EDF3;
   --font-ar: "IBM Plex Sans Arabic", "Noto Sans Arabic", Tahoma, sans-serif;
   --font-en: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
@@ -23,13 +22,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --paper: #071426; --card: #0D1C33; --ink: #E7ECF3; --muted: #93A3B8;
-    --line: #1E3150; --teal: #4FB8C9; --chip: #15284A; --stage-light: #F3F5F8;
+    --line: #1E3150; --teal: #4FB8C9; --chip: #15284A;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --paper: #071426; --card: #0D1C33; --ink: #E7ECF3; --muted: #93A3B8;
-  --line: #1E3150; --teal: #4FB8C9; --chip: #15284A; --stage-light: #F3F5F8;
+  --line: #1E3150; --teal: #4FB8C9; --chip: #15284A;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -38,160 +37,112 @@ body { background: var(--paper); color: var(--ink); font: 15px/1.55 var(--font-e
 h1, h2, h3 { text-wrap: balance; margin: 0; }
 p { margin: 0; }
 button { font-family: inherit; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
 
-/* round bar */
-.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--paper) 88%, transparent);
-  backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 .bar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; padding-block: 12px; }
 .brandline { display: flex; align-items: baseline; gap: 10px; margin-inline-end: auto; }
 .brandline b { font: 700 20px/1 var(--font-ar); }
 .brandline span { color: var(--muted); font-size: 13px; }
 .jump { display: flex; gap: 6px; flex-wrap: wrap; }
 .jump a { font: 600 13px var(--font-en); color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; background: var(--card); }
-.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--card); }
-.seg button { font: 500 13px var(--font-en); color: var(--muted); background: none; border: 0; padding: 7px 12px; cursor: pointer; }
-.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
-button:focus-visible, a:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
 .btn { font: 600 13px var(--font-en); border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+.btn[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .btn.primary { background: var(--amber); border-color: var(--amber); color: #0B1F3A; }
 
-/* intro */
-.intro { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 32px; padding-block: 40px 28px; align-items: start; }
+.intro { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 32px; padding-block: 40px 28px; align-items: start; }
 .intro h1 { font: 600 34px/1.15 var(--font-en); letter-spacing: -.01em; }
 .intro p { color: var(--muted); max-width: 62ch; margin-top: 12px; }
-.applied { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
-.applied h3 { font: 600 12px var(--font-en); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-.applied ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; font-size: 14px; }
-.applied li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; }
-.applied .id { font: 600 12px var(--font-mono); color: var(--teal); padding-top: 2px; }
-.applied li.gone .id { color: #B4562F; }
+.decided { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+.decided h3 { font: 600 12px var(--font-en); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.decided ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; font-size: 14px; }
+.decided li { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 8px; }
+.decided .st { font: 600 11px var(--font-mono); padding-top: 2px; }
+.st.keep { color: var(--teal); } .st.maybe { color: #B57A12; } .st.drop { color: #B4562F; } .st.hold { color: var(--muted); }
 
-/* section shell */
 .sec { border-top: 1px solid var(--line); padding-block: 44px 8px; scroll-margin-top: 70px; }
 .sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin-bottom: 22px; }
 .sec-head .num { font: 600 13px var(--font-mono); background: var(--ink); color: var(--paper); border-radius: 6px; padding: 3px 9px; }
 .sec-head h2 { font: 600 26px/1.2 var(--font-en); }
 .sec-head h2 .ar { font: 700 24px var(--font-ar); margin-inline-start: 8px; }
 .sec-head .tools { margin-inline-start: auto; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.sec-head .lede { flex-basis: 100%; color: var(--muted); max-width: 72ch; }
+.sec-head .lede { flex-basis: 100%; color: var(--muted); max-width: 74ch; }
 .subhead { font: 600 12px var(--font-en); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 28px 0 10px; }
 
-/* logo board */
-.stages { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
-.stage { border-radius: 12px; min-height: 240px; display: grid; place-items: center; padding: 28px; position: relative; }
-.stage.light { background: var(--stage-light); border: 1px solid var(--line); }
-.stage.dark { background: var(--navy); }
-.stage img { max-width: 100%; max-height: 190px; width: auto; height: auto; display: block; }
-.tag { position: absolute; inset-block-start: 10px; inset-inline-start: 12px; font: 500 11px var(--font-mono); color: #8494AA; }
-.missing { font: 500 13px var(--font-mono); color: #8494AA; border: 1px dashed currentColor; border-radius: 8px; padding: 10px 14px; text-align: center; }
-.ladder { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
-.ladder > div { border-radius: 12px; padding: 18px 18px 12px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 18px 22px; }
-.ladder .l { background: var(--stage-light); border: 1px solid var(--line); }
-.ladder .d { background: #DFE5ED; }
-figure { margin: 0; }
-.ladder figure, .mini figure { display: grid; justify-items: center; gap: 6px; }
-figcaption { font: 500 10px var(--font-mono); color: #8494AA; }
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.st-box { position: relative; border-radius: 16px; aspect-ratio: 5 / 4; display: grid; place-items: center; cursor: pointer; overflow: hidden; }
+.st-box.dark { background: var(--navy); }
+.st-box.light { background: #FFFFFF; border: 1px solid var(--line); }
+.st-box svg { width: 56%; height: auto; overflow: visible; }
+.st-box .hint { position: absolute; inset-block-end: 12px; inset-inline-end: 14px; font: 500 11px var(--font-mono); color: #8494AA; }
+.st-box .badge { position: absolute; inset-block-start: 12px; inset-inline-start: 14px; font: 600 11px var(--font-mono); color: #0B1F3A; background: var(--amber); border-radius: 5px; padding: 2px 7px; }
+.hero-side { display: grid; gap: 12px; align-content: start; }
+.why { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; display: grid; gap: 10px; }
+.why h3 { font: 600 17px var(--font-en); }
+.why p { font-size: 14px; }
+.why .muted { color: var(--muted); }
+.row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
-/* contexts */
-.ctx { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; }
-.ctx > * { border-radius: 12px; min-width: 0; }
+/* flame forms */
+.forms { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.fm { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.fm .st-box { border-radius: 0; aspect-ratio: 4 / 3; border: 0; }
+.fm .st-box.light { border-bottom: 1px solid var(--line); }
+.fm .st-box svg { width: 60%; }
+.fm-body { padding: 14px 16px 16px; display: grid; gap: 10px; flex: 1; align-content: start; }
+.fm-body h3 { font: 600 18px var(--font-en); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.fm-body h3 .ar { font: 700 17px var(--font-ar); color: var(--muted); }
+.fm-body .id { font: 600 12px var(--font-mono); color: var(--teal); }
+.fm-body p { font-size: 14px; }
+.fm-body .motion { color: var(--muted); font-size: 13px; }
+.mini { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; padding: 10px 12px; background: var(--paper); border-radius: 10px; }
+.mini figure { margin: 0; display: grid; justify-items: center; gap: 4px; }
+.mini img { display: block; }
+.mini figcaption { font: 500 10px var(--font-mono); color: #8494AA; }
+.mini .note { font-size: 12px; color: var(--muted); flex-basis: 100%; }
+
+/* in use */
+.try { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; }
+.try > * { min-width: 0; border-radius: 14px; }
+.pickrow { grid-column: span 12; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.pickrow b { font: 600 13px var(--font-en); margin-inline-end: 4px; }
 .site { grid-column: span 12; background: #fff; border: 1px solid var(--line); overflow: hidden; }
 .site .chrome { background: #E9EDF2; display: flex; align-items: center; gap: 8px; padding: 8px 12px 0; }
 .site .tab { background: #fff; border-radius: 8px 8px 0 0; padding: 7px 12px; display: flex; align-items: center; gap: 8px; font: 12px var(--font-ar); color: #0B1F3A; max-width: 260px; }
 .site .tab img { width: 16px; height: 16px; }
 .site .dots { display: flex; gap: 5px; margin-inline-end: 6px; }
 .site .dots i { width: 9px; height: 9px; border-radius: 50%; background: #C7CFDA; display: block; }
-.site header { direction: rtl; display: flex; align-items: center; gap: 24px; padding: 16px 24px; border-bottom: 1px solid #E6EAF0; flex-wrap: wrap; }
-.site header > img { height: 40px; width: auto; }
+.site header { direction: rtl; display: flex; align-items: center; gap: 24px; padding: 14px 24px; border-bottom: 1px solid #E6EAF0; flex-wrap: wrap; }
+.logo-live { display: inline-flex; align-items: center; gap: 8px; direction: rtl; text-decoration: none; cursor: pointer; }
+.logo-live svg { height: 52px; width: auto; overflow: visible; }
+.logo-live .name { font: 700 26px/1 var(--font-ar); color: #0B1F3A; }
 .site nav { display: flex; gap: 20px; font: 500 14px var(--font-ar); color: #0B1F3A; margin-inline-end: auto; flex-wrap: wrap; }
-.site .cta { font: 600 13px var(--font-ar); background: #007C91; color: #fff; border-radius: 8px; padding: 8px 14px; border: 0; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
-.site .hero { direction: rtl; padding: 28px 24px 34px; font-family: var(--font-ar); color: #0B1F3A; }
-.site .hero b { display: block; font-size: 24px; font-weight: 700; }
-.site .hero span { color: #5A6B82; font-size: 14px; }
-.card-mock { grid-column: span 5; background: var(--navy); aspect-ratio: 85 / 55; max-width: 100%; padding: 7%; display: flex; flex-direction: column; justify-content: space-between; direction: rtl; color: #fff; box-shadow: 0 10px 30px -18px rgba(11, 31, 58, .7); }
-.card-mock img { height: 34%; width: auto; max-width: 75%; align-self: flex-start; }
-.card-mock .who { font: 13px/1.5 var(--font-ar); }
-.card-mock .who b { display: block; font-size: 15px; }
-.card-mock .who .en { font-family: var(--font-en); color: #9FB0C6; font-size: 12px; }
-.card-mock .who .url { color: #fff; opacity: .8; font-family: var(--font-en); font-size: 12px; }
-.phone { grid-column: span 4; background: linear-gradient(160deg, #1D3557, #0B1F3A 60%, #00303A); padding: 20px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 10px; align-content: start; }
-.phone .app { display: grid; justify-items: center; gap: 4px; font: 10px var(--font-ar); color: #E7ECF3; }
-.phone .app i { width: 48px; height: 48px; border-radius: 12px; background: rgba(255, 255, 255, .16); display: block; }
-.phone .app img { width: 48px; height: 48px; display: block; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .35)); }
-.chat { grid-column: span 3; background: var(--card); border: 1px solid var(--line); padding: 14px; display: grid; gap: 10px; align-content: start; }
-.chat .row1 { display: flex; align-items: center; gap: 10px; direction: rtl; }
-.chat .av { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; flex: none; background: var(--navy); }
-.chat .av img { width: 100%; height: 100%; display: block; }
-.chat .t { font: 600 14px var(--font-ar); }
-.chat .s { font: 12px var(--font-ar); color: var(--muted); }
-.stamp { grid-column: span 12; background: #FBFAF6; border: 1px solid var(--line); padding: 22px 26px; display: flex; gap: 28px; align-items: center; flex-wrap: wrap; direction: rtl; }
-.stamp .doc { font: 13px/1.9 var(--font-ar); color: #3A4658; flex: 1 1 280px; min-width: 0; }
-.stamp .doc b { color: #0B1F3A; }
-.stamp .seal { border: 2.5px solid #1F3A73; border-radius: 10px; padding: 12px 18px; transform: rotate(-5deg); opacity: .82; mix-blend-mode: multiply; display: grid; justify-items: center; gap: 4px; }
-.stamp .seal img { height: 54px; width: auto; filter: url(#ink); }
-.stamp .seal span { font: 600 11px var(--font-ar); color: #1F3A73; }
-
-/* spark board */
-.sparks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.sp { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
-.sp-stage { position: relative; aspect-ratio: 4 / 3; display: grid; place-items: center; cursor: pointer; }
-.sp-stage.dark { background: var(--navy); }
-.sp-stage.light { background: #FFFFFF; border-bottom: 1px solid var(--line); }
-.sp-stage svg { width: 62%; height: auto; max-height: 92%; overflow: visible; }
-.sp-stage .hint { position: absolute; inset-block-end: 10px; inset-inline-end: 12px; font: 500 11px var(--font-mono); color: #8494AA; }
-.sp-stage .badge { position: absolute; inset-block-start: 10px; inset-inline-start: 12px; font: 600 11px var(--font-mono); color: #0B1F3A; background: var(--amber); border-radius: 5px; padding: 2px 7px; }
-.sp-body { padding: 14px 16px 16px; display: grid; gap: 10px; flex: 1; align-content: start; }
-.sp-body h3 { font: 600 18px var(--font-en); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-.sp-body h3 .ar { font: 700 17px var(--font-ar); color: var(--muted); }
-.sp-body .id { font: 600 12px var(--font-mono); color: var(--teal); }
-.sp-body p { font-size: 14px; }
-.sp-body .motion { color: var(--muted); font-size: 13px; }
-.sp-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-.mini { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; padding: 10px 12px; background: var(--paper); border-radius: 10px; }
-.mini img { display: block; }
-.mini .note { font-size: 12px; color: var(--muted); flex-basis: 100%; }
-
-/* try it */
-.try { margin-top: 28px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; }
-.try > * { min-width: 0; border-radius: 14px; }
-.try .pickrow { grid-column: span 12; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.try .pickrow b { font: 600 13px var(--font-en); margin-inline-end: 4px; }
-.try .site { grid-column: span 12; }
-.logo-live { display: inline-flex; align-items: center; gap: 10px; direction: rtl; cursor: pointer; text-decoration: none; }
-.logo-live svg { height: 46px; width: auto; overflow: visible; }
-.logo-live img { height: 34px; width: auto; display: block; }
-.cta .spk { width: 9px; height: 9px; background: var(--amber); border-radius: 1.5px; transform: rotate(45deg); transition: transform .45s cubic-bezier(.2, .9, .25, 1.3); }
-.cta:hover .spk { transform: translateY(-4px) rotate(225deg) scale(1.25); }
+.cta { font: 600 13px var(--font-ar); background: #007C91; color: #fff; border-radius: 8px; padding: 8px 14px; border: 0; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.cta svg { width: 16px; height: 22px; overflow: visible; }
+.site .pagehero { direction: rtl; padding: 26px 24px 32px; font-family: var(--font-ar); color: #0B1F3A; }
+.site .pagehero b { display: block; font-size: 22px; font-weight: 700; }
+.site .pagehero span { color: #5A6B82; font-size: 14px; }
 .sting { grid-column: span 8; background: var(--navy); aspect-ratio: 16 / 9; position: relative; overflow: hidden; display: grid; place-items: center; }
-.sting .frame { display: flex; align-items: center; gap: 4%; direction: rtl; width: 78%; justify-content: center; }
+.sting .frame { display: flex; align-items: center; gap: 3%; direction: rtl; justify-content: center; width: 80%; }
 .sting svg { width: 30%; height: auto; overflow: visible; flex: none; }
-.sting img { width: 46%; height: auto; display: block; opacity: 1; transform: none; }
-.sting.play img { animation: sting-word .8s 1.25s cubic-bezier(.2, .8, .2, 1) both; }
+.sting .name { font: 700 clamp(34px, 7vw, 76px)/1 var(--font-ar); color: #fff; }
+.sting.play .name { animation: sting-word .8s 1.2s cubic-bezier(.2, .8, .2, 1) both; }
 .sting .line { position: absolute; inset-block-end: 9%; inset-inline: 0; text-align: center; font: 500 clamp(11px, 1.6vw, 15px) var(--font-ar); color: #C9D5E4; }
 .sting.play .line { animation: sting-line .7s 2s ease-out both; }
 .sting .play-btn { position: absolute; inset-block-start: 12px; inset-inline-start: 12px; }
 @keyframes sting-word { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
 @keyframes sting-line { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-.loader { grid-column: span 4; background: var(--card); border: 1px solid var(--line); display: grid; place-items: center; align-content: center; gap: 14px; padding: 20px; }
-.loader svg { width: 72px; height: auto; overflow: visible; }
+.loader { grid-column: span 4; background: var(--card); border: 1px solid var(--line); display: grid; place-items: center; align-content: center; gap: 12px; padding: 20px; }
+.loader svg { width: 84px; height: auto; overflow: visible; }
 .loader span { font: 13px var(--font-ar); color: var(--muted); }
 
-/* type board */
-.types { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.ty { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
-.ty-stages { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
-.ty-stages > div { display: grid; place-items: center; padding: 22px 18px; min-height: 170px; position: relative; }
-.ty-stages .l { background: #FFFFFF; border-bottom: 1px solid var(--line); }
-.ty-stages .d { background: var(--navy); }
-.ty-stages img { max-width: 100%; max-height: 120px; width: auto; height: auto; display: block; }
-.ty-body { padding: 14px 16px 16px; display: grid; gap: 8px; }
-.ty-body h3 { font: 600 18px var(--font-en); display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
-.ty-body h3 .ar { font: 700 17px var(--font-ar); color: var(--muted); }
-.ty-body .face { font: 500 12px var(--font-mono); color: var(--muted); }
-.ty-body p { font-size: 14px; }
-.ty-body .risk { font-size: 13px; color: var(--muted); }
-.ty-small { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; padding: 8px 12px; background: var(--paper); border-radius: 10px; }
-.ty-small img { display: block; width: auto; }
+/* questions */
+.qs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.q { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.q .id { font: 600 12px var(--font-mono); color: var(--teal); }
+.q h3 { font: 600 16px var(--font-en); }
+.q p { font-size: 14px; color: var(--muted); }
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { font: 500 12px var(--font-en); border: 1px solid var(--line); background: var(--chip); color: var(--ink); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
@@ -204,88 +155,79 @@ figcaption { font: 500 10px var(--font-mono); color: #8494AA; }
 .reply textarea { width: 100%; min-height: 100px; resize: vertical; border-radius: 10px; border: 1px solid #23406B; background: #0F2747; color: #fff; font: 13px/1.6 var(--font-mono); padding: 12px; }
 .reply pre { margin: 0; white-space: pre-wrap; color: #C9D5E4; font: 13px/1.6 var(--font-mono); }
 
-@media (max-width: 960px) {
-  .sparks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .types { grid-template-columns: minmax(0, 1fr); }
-}
+@media (max-width: 960px) { .forms, .qs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 860px) {
-  .intro, .stages, .ladder { grid-template-columns: minmax(0, 1fr); }
-  .card-mock, .phone, .chat, .sting, .loader { grid-column: span 12; }
+  .intro, .hero { grid-template-columns: minmax(0, 1fr); }
+  .sting, .loader { grid-column: span 12; }
 }
-@media (max-width: 600px) {
-  .sparks, .ty-stages { grid-template-columns: minmax(0, 1fr); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .sting.play img, .sting.play .line, .cta .spk { animation: none !important; transition: none !important; }
-}
+@media (max-width: 600px) { .forms, .qs { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .sting.play .name, .sting.play .line { animation: none !important; } }
 
 /*MOTION_CSS*/
 </style>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <filter id="ink"><feColorMatrix type="matrix" values="0 0 0 0 0.12  0 0 0 0 0.23  0 0 0 0 0.45  0 0 0 1 0"/></filter>
-</svg>
-
 <div class="bar">
   <div class="wrap">
-    <div class="brandline"><b>وقّاد</b><span>Logo Lab · Round 2 · 9 Oct 2026</span></div>
-    <nav class="jump" aria-label="Sections"><a href="#logo">Logo</a><a href="#spark">Spark</a><a href="#type">Type</a><a href="#reply">Reply</a></nav>
+    <div class="brandline"><b>وقّاد</b><span>Logo Lab · Round 3 · the symbol · 9 Oct 2026</span></div>
+    <nav class="jump" aria-label="Sections"><a href="#ignite">Ignite</a><a href="#forms">Flame forms</a><a href="#use">In use</a><a href="#calls">Your calls</a><a href="#reply">Reply</a></nav>
   </div>
 </div>
 
 <div class="wrap">
   <section class="intro">
     <div>
-      <h1>One mark. Five ways to make it spark, five voices for the name.</h1>
-      <p>Your round 1 picks are now applied to the logo. The و monogram is retired. The spark section shows five new ways for the diamond to become a spark. Each one moves: hover over it, play its entrance, or loop it. The type section sets وقّاد in five new voices beside the mark. Mark each variant Favourite, Maybe or No, and copy your reply at the bottom.</p>
+      <h1>The diamond that catches fire.</h1>
+      <p>This round is only the symbol: the four-diamond grid and its spark. You wanted the spark to become a flame you can use in video and on the website, so the diamond now ignites. Hover over any stage. Start with <b>Ignite</b>, which keeps your favourite mark at rest and lets it burn in motion. Then compare five forms that keep a flame in the logo itself.</p>
     </div>
-    <div class="applied" id="applied"></div>
+    <div class="decided">
+      <h3>Decided so far</h3>
+      <ul>
+        <li><span class="st keep">KEEP</span><span>Lift: the lifted amber diamond is the mark.</span></li>
+        <li><span class="st maybe">MAYBE</span><span>Burst, kept at the end of the flame forms for comparison.</span></li>
+        <li><span class="st drop">DROPPED</span><span>Core, Socket, Halo, and the و monogram.</span></li>
+        <li><span class="st drop">RETIRED</span><span>The diamond as shadda. The name gets a real shadda, applied when we return to type.</span></li>
+        <li><span class="st hold">ON HOLD</span><span>Typography. All five voices stay as maybes until the symbol is final.</span></li>
+      </ul>
+    </div>
   </section>
 
-  <section class="sec" id="logo">
+  <section class="sec" id="ignite">
     <div class="sec-head">
-      <span class="num">1</span><h2>The logo<span class="ar">الشعار</span></h2>
-      <div class="tools"><div class="seg" role="group" aria-label="Round">
-        <button id="r-v2" data-r="v2" aria-pressed="true">Round 2</button>
-        <button id="r-v1" data-r="v1" aria-pressed="false">Round 1</button>
-        <button id="r-v0" data-r="v0" aria-pressed="false">As received</button>
-      </div></div>
-      <p class="lede">The mark with the bolder lift and the spark only in the mark. Below it, the logotype on its own (old direction B), now in the same lighter Kufi so the name has one shape everywhere.</p>
+      <span class="num">1</span><h2>Ignite<span class="ar">الاشتعال</span></h2>
+      <p class="lede">The mark you chose, unchanged at rest. When it moves, the diamond becomes a flame, flickers, and settles back into a diamond. Hover over a stage to light it, and move away to let it settle.</p>
     </div>
-    <div id="logo-board"></div>
+    <div class="hero" id="hero"></div>
   </section>
 
-  <section class="sec" id="spark">
+  <section class="sec" id="forms">
     <div class="sec-head">
-      <span class="num">2</span><h2>The spark<span class="ar">الشرارة</span></h2>
-      <div class="tools">
-        <div class="seg" role="group" aria-label="Background">
-          <button id="bg-dark" data-bg="dark" aria-pressed="true">Navy</button>
-          <button id="bg-light" data-bg="light" aria-pressed="false">Paper</button>
-        </div>
-        <button class="btn" id="play-all">Play all entrances</button>
-        <button class="btn" id="loop-all" aria-pressed="false">Loop all</button>
-      </div>
-      <p class="lede">The diamond stays the hero in every variant. What changes is how it becomes a spark. Hover over a stage to see the hover effect. The buttons play the entrance (for a video intro or page load) and the loop (for loaders and backgrounds). Each one is also built as a looping SVG file.</p>
+      <span class="num">2</span><h2>Flame forms<span class="ar">أشكال اللهب</span></h2>
+      <div class="tools"><button class="btn" id="play-all">Play all entrances</button><button class="btn" id="loop-all" aria-pressed="false">Loop all</button></div>
+      <p class="lede">Five ways to keep a flame in the logo itself, even on paper. Each is built from the same diamond and leans left, which is forward for a reader of Arabic. Hover to see each one respond. The strip under each shows it at 16 to 48 px and as an app icon.</p>
     </div>
-    <div class="sparks" id="sparks"></div>
+    <div class="forms" id="forms-grid"></div>
+  </section>
 
-    <div class="subhead">Try it on the website and in a video</div>
+  <section class="sec" id="use">
+    <div class="sec-head">
+      <span class="num">3</span><h2>In use<span class="ar">في الاستخدام</span></h2>
+      <p class="lede">Pick a form and try it where motion matters: the website header and button (hover them), a video intro, and a loading indicator. The name here is plain IBM Plex Sans Arabic with a real shadda, as a stand-in until we return to type.</p>
+    </div>
     <div class="try" id="try"></div>
   </section>
 
-  <section class="sec" id="type">
+  <section class="sec" id="calls">
     <div class="sec-head">
-      <span class="num">3</span><h2>The type<span class="ar">الخط</span></h2>
-      <p class="lede">The same lockup with five other voices for the name. Each one keeps your round 1 choices: the spark in the mark only, WAQQAD spaced under د ا ق. On navy, the name alone carries the amber spark as its shadda. The strip under each one shows the name at email-signature and footer sizes.</p>
+      <span class="num">4</span><h2>Your calls<span class="ar">قراراتك</span></h2>
+      <p class="lede">Three decisions shape every form above. My recommendation is first in each.</p>
     </div>
-    <div class="types" id="types"></div>
+    <div class="qs" id="qs"></div>
   </section>
 
   <section class="reply" id="reply">
-    <h2>Your reply for round 3</h2>
-    <p>Write what you like and what bothers you. Your Favourite, Maybe and No marks are added underneath. Then copy it all into our chat.</p>
-    <textarea id="reply-note" aria-label="Your notes" placeholder="Which spark, which voice, and why…"></textarea>
+    <h2>Your reply for round 4</h2>
+    <p>Write what you feel when you watch them move. Your marks are added underneath. Then copy it all into our chat.</p>
+    <textarea id="reply-note" aria-label="Your notes" placeholder="Which flame, which motion, and why…"></textarea>
     <pre id="reply-text"></pre>
     <button class="btn primary" id="copy" style="justify-self:start">Copy reply</button>
   </section>
@@ -293,222 +235,203 @@ figcaption { font: 500 10px var(--font-mono); color: #8494AA; }
 
 <script>
 const DATA = /*DATA*/{};
-
-const uri = s => "data:image/svg+xml;charset=utf-8," + encodeURIComponent(s);
+const V = DATA.variants;
+const FORM_KEYS = ["ember", "core", "facet", "rising", "inner", "burst"];
 const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
 };
-let round = store.get("lab2-round", "v2");
-let sparkBg = store.get("lab2-bg", "dark");
-let picks = store.get("lab2-picks", {});
-let trySpark = store.get("lab2-try", "lift");
-const SPARK_KEYS = Object.keys(DATA.sparks);
-const TYPE_KEYS = Object.keys(DATA.type);
+let picks = store.get("lab3-picks", {});
+let tryKey = store.get("lab3-try", "ignite");
+const uri = s => "data:image/svg+xml;charset=utf-8," + encodeURIComponent(s);
+const img = (svg, alt, attrs = "") => `<img src="${uri(svg)}" alt="${alt}" ${attrs}>`;
 
-function img(svg, alt, attrs = "") {
-  if (!svg) return `<div class="missing">${alt}<br>not in this round</div>`;
-  return `<img src="${uri(svg)}" alt="${alt}" ${attrs}>`;
-}
-
-/* ---------- applied picks */
-document.getElementById("applied").innerHTML = `<h3>Applied from round 1</h3><ul>
-  <li><span class="id">A-5</span><span>The spark lives in the mark only. The shadda is navy in the lockup.</span></li>
-  <li><span class="id">A-6</span><span>The spark lifts 10 units, not 7.</span></li>
-  <li><span class="id">A-7·8</span><span>Corners stay 2.2, and WAQQAD stays spaced across د ا ق.</span></li>
-  <li><span class="id">B-5·6</span><span>The logotype keeps its favicon and now uses the lighter Kufi.</span></li>
-  <li><span class="id">S-3</span><span>On navy, the Latin and the rule are white. Light teal is gone.</span></li>
-  <li class="gone"><span class="id">C</span><span>The و monogram is retired, as you asked. C-4 to C-6 no longer apply.</span></li>
-</ul>`;
-
-/* ---------- 1 · logo board */
-function logoBoard() {
-  const R = DATA.rounds[round];
-  const k = (key, alt, attrs) => img(R[key], alt || key, attrs);
-  const ladder = (key) => [16, 24, 32, 48, 64, 96].map(px =>
-    `<figure>${k(key, key, `width="${px}" height="${px}" style="width:${px}px;height:${px}px"`)}<figcaption>${px}</figcaption></figure>`).join("");
-  const apps = ["التقويم", "البريد", "الصور", "الخرائط", "الملاحظات", "", "الطقس", "الإعدادات"];
-  document.getElementById("logo-board").innerHTML = `
-    <div class="stages">
-      <div class="stage light"><span class="tag">lockup.svg</span>${k("lockup", "Lockup on white")}</div>
-      <div class="stage dark"><span class="tag">lockup_dark.svg</span>${k("lockup_dark", "Lockup on navy")}</div>
-      <div class="stage light"><span class="tag">logotype.svg</span>${k("logotype", "Logotype on white")}</div>
-      <div class="stage dark"><span class="tag">logotype_dark.svg</span>${k("logotype_dark", "Logotype on navy")}</div>
-    </div>
-    <div class="subhead">Small sizes in px · the mark on white, the tile as an app icon</div>
-    <div class="ladder"><div class="l">${ladder("mark")}</div><div class="d">${ladder("tile")}</div></div>
-    <div class="subhead">In use</div>
-    <div class="ctx">
-      <div class="site">
-        <div class="chrome"><span class="dots"><i></i><i></i><i></i></span><div class="tab">${k("tile", "favicon", 'width="16" height="16"')}<span>وقّاد · نظام الجمعيات</span></div></div>
-        <header>${k("lockup", "Lockup in the header")}<nav><span>الرئيسية</span><span>معكم</span><span>الحلول</span><span>عن وقّاد</span></nav><span class="cta">اطلب عرضاً</span></header>
-        <div class="hero"><b>نظام الجمعيات المبني للحوكمة</b><span>أنظمة تصمد أمام التدقيق</span></div>
-      </div>
-      <div class="card-mock">${k("lockup_dark", "Lockup on a business card")}<div class="who"><b>عبدالعزيز القرني</b>الشريك المدير <span class="en">· Managing Partner</span><br><span class="url">waqqad.sa</span></div></div>
-      <div class="phone">${apps.map(a => a === "" ? `<div class="app">${k("tile", "App icon")}<span>وقّاد</span></div>` : `<div class="app"><i></i><span>${a}</span></div>`).join("")}</div>
-      <div class="chat">
-        <div class="row1"><div class="av">${k("tile", "Avatar")}</div><div><div class="t">وقّاد</div><div class="s">حساب أعمال · متصل</div></div></div>
-        <div class="row1"><div class="av" style="width:28px;height:28px">${k("tile", "Avatar")}</div><div class="s">تم إرسال العرض الفني والمالي</div></div>
-      </div>
-      <div class="stamp">
-        <div class="doc"><b>عقد تقديم خدمات تقنية</b><br>يلتزم الطرف الثاني (وقّاد) بتسليم المرحلة الأولى خلال ستين يوماً من تاريخ توقيع هذا العقد، وفق نطاق العمل الموضح في الملحق (أ).</div>
-        <div class="seal">${k("lockup_mono", "One-colour lockup as a stamp")}<span>معتمد</span></div>
-      </div>
-    </div>`;
-  document.querySelectorAll("[data-r]").forEach(b => b.setAttribute("aria-pressed", b.dataset.r === round));
-}
-
-/* ---------- motion helpers */
-function playIntro(svg) {
+/* ---------- motion controller: SMIL morphs + CSS classes */
+const anims = (svg, name) => svg ? [...svg.querySelectorAll(`animate[data-a="${name}"]`)] : [];
+const run = (list, fn) => list.forEach(a => { try { a[fn](); } catch (e) {} });
+function ignite(svg) {
   if (!svg) return;
-  const looping = svg.classList.contains("wq-loop");
+  svg.classList.add("wq-hover");
+  clearTimeout(svg._f);
+  run(anims(svg, "flicker"), "endElement");
+  run(anims(svg, "in"), "beginElement");
+  svg._f = setTimeout(() => run(anims(svg, "flicker"), "beginElement"), 380);
+  svg._lit = true;
+}
+function settle(svg) {
+  if (!svg || !svg._lit || svg.dataset.hold === "1") return;
+  svg.classList.remove("wq-hover");
+  clearTimeout(svg._f);
+  run(anims(svg, "flicker"), "endElement");
+  run(anims(svg, "out"), "beginElement");
+  svg._lit = false;
+}
+function entrance(svg, holdAfter) {
+  if (!svg) return;
   svg.classList.remove("wq-intro", "wq-loop");
   void svg.getBoundingClientRect();
   svg.classList.add("wq-intro");
-  clearTimeout(svg._t);
-  svg._t = setTimeout(() => { svg.classList.remove("wq-intro"); if (looping || svg.dataset.loop === "1") svg.classList.add("wq-loop"); }, 2300);
+  clearTimeout(svg._e1); clearTimeout(svg._e2); clearTimeout(svg._e3);
+  svg._e1 = setTimeout(() => ignite(svg), 1350);
+  svg._e2 = setTimeout(() => { if (!holdAfter) settle(svg); }, 3300);
+  svg._e3 = setTimeout(() => { svg.classList.remove("wq-intro"); if (svg.dataset.loop === "1") svg.classList.add("wq-loop"); }, 2300);
 }
 function setLoop(svg, on) {
+  if (!svg) return;
   svg.dataset.loop = on ? "1" : "";
   svg.classList.toggle("wq-loop", on);
-  if (on) svg.classList.remove("wq-intro");
+  clearInterval(svg._iv);
+  if (on && svg.classList.contains("wq-ignite")) {
+    // the diamond breathes: ignite, burn, settle, rest
+    const cycle = () => { svg.dataset.hold = ""; ignite(svg); setTimeout(() => settle(svg), 2200); };
+    cycle(); svg._iv = setInterval(cycle, 3600);
+  } else if (on && anims(svg, "in").length) {
+    svg.dataset.hold = "1"; ignite(svg);
+  } else if (!on) {
+    svg.dataset.hold = ""; settle(svg); svg.classList.remove("wq-hover");
+  }
 }
 
-/* ---------- 2 · spark board */
-const pickChips = (id) => `<div class="chips" role="group" aria-label="${id}">${["Favourite", "Maybe", "No"].map((o, i) =>
-  `<button class="chip" id="chip-${id}-${i}" data-q="${id}" data-o="${o}" aria-pressed="${picks[id] === o}">${o}</button>`).join("")}</div>`;
+/* hover anywhere on a stage or logo link lights it */
+document.addEventListener("mouseover", e => {
+  const host = e.target.closest("[data-live]");
+  if (host && !host.contains(e.relatedTarget)) host.querySelectorAll("svg.wq").forEach(s => { if (s.dataset.loop !== "1") ignite(s); });
+});
+document.addEventListener("mouseout", e => {
+  const host = e.target.closest("[data-live]");
+  if (host && !host.contains(e.relatedTarget)) host.querySelectorAll("svg.wq").forEach(s => { if (s.dataset.loop !== "1") settle(s); });
+});
 
-function sparkBoard() {
-  document.getElementById("sparks").innerHTML = SPARK_KEYS.map((key, i) => {
-    const s = DATA.sparks[key];
-    const id = i === 0 ? "SP-0" : `SP-${i}`;
-    const sizes = [16, 24, 32, 48].map(px => `<figure>${img(s.light, s.name, `width="${px}" height="${px}" style="width:${px}px;height:${px}px"`)}<figcaption>${px}</figcaption></figure>`).join("")
-      + `<figure>${img(s.tile, s.name + " app icon", 'width="40" height="40" style="width:40px;height:40px"')}<figcaption>icon</figcaption></figure>`;
-    return `<article class="sp" data-spark="${key}">
-      <div class="sp-stage ${sparkBg}" data-stage="${key}" title="Hover to see the hover effect">${i === 0 ? `<span class="badge">${s.tag}</span>` : ""}${s.live[sparkBg]}<span class="hint">hover me</span></div>
-      <div class="sp-body">
-        <h3><span class="id">${id}</span>${s.name}<span class="ar">${s.ar}</span></h3>
-        <p>${s.idea}</p>
-        <p class="motion">${s.motion}</p>
-        <div class="sp-actions"><button class="btn" data-play="${key}">Play entrance</button><button class="btn" data-loop="${key}" aria-pressed="false">Loop</button></div>
-        <div class="mini">${sizes}<span class="note">${s.small}</span></div>
-        ${pickChips(id)}
+/* ---------- 1 · hero */
+function hero() {
+  const v = V.ignite;
+  document.getElementById("hero").innerHTML = `
+    <div class="st-box dark" data-live data-stage="hero-dark"><span class="badge">Lift at rest</span>${v.live.dark}<span class="hint">hover me</span></div>
+    <div class="st-box light" data-live data-stage="hero-light">${v.live.light}<span class="hint">hover me</span></div>
+    <div class="why" style="grid-column:1 / -1">
+      <h3>Why I recommend the flame in motion, not in the logo</h3>
+      <p>The old logos were a pixel flame and a purple calligraphic flame. The brief for this rebrand was to move from a literal flame to something a board signs under. Keeping the diamond at rest keeps that promise on contracts, stamps and the 16 px favicon. The flame then appears where people are watching: on the website, in videos, in the app as it loads. The name means kindling, and here the logo is literally the thing that kindles.</p>
+      <p class="muted">The flame leans left, toward where an Arabic reader's eye travels. The pale core is optional (see F-2).</p>
+      <div class="row-actions">
+        <button class="btn primary" id="hero-play">Play entrance</button>
+        <button class="btn" id="hero-hold" aria-pressed="false">Hold the flame</button>
+        <button class="btn" id="hero-loop" aria-pressed="false">Loop: breathe</button>
+      </div>
+      <div class="mini">${[16, 24, 32, 48].map(px => `<figure>${img(v.light, "Ignite at rest", `width="${px}" height="${px}"`)}<figcaption>${px}</figcaption></figure>`).join("")}<figure>${img(v.tile, "App icon", 'width="44" height="44"')}<figcaption>icon</figcaption></figure><span class="note">At rest it is exactly your Lift mark, so every small size and the stamp stay as approved.</span></div>
+      <div class="chips" role="group" aria-label="FL-0">${chipSet("FL-0")}</div>
+    </div>`;
+}
+
+/* ---------- 2 · forms */
+function chipSet(id) {
+  return ["Favourite", "Maybe", "No"].map((o, i) => `<button class="chip" id="chip-${id}-${i}" data-q="${id}" data-o="${o}" aria-pressed="${picks[id] === o}">${o}</button>`).join("");
+}
+function forms() {
+  document.getElementById("forms-grid").innerHTML = FORM_KEYS.map((k, i) => {
+    const v = V[k];
+    const id = `FL-${i + 1}`;
+    const sizes = [16, 24, 32, 48].map(px => `<figure>${img(v.light, v.name, `width="${px}" height="${px}"`)}<figcaption>${px}</figcaption></figure>`).join("")
+      + `<figure>${img(v.tile, v.name + " app icon", 'width="40" height="40"')}<figcaption>icon</figcaption></figure>`;
+    return `<article class="fm">
+      <div class="st-box dark" data-live data-stage="${k}">${v.tag ? `<span class="badge">${v.tag}</span>` : ""}${v.live.dark}<span class="hint">hover me</span></div>
+      <div class="fm-body">
+        <h3><span class="id">${id}</span>${v.name}<span class="ar">${v.ar}</span></h3>
+        <p>${v.idea}</p>
+        <p class="motion">${v.motion}</p>
+        <div class="row-actions"><button class="btn" data-play="${k}">Play entrance</button><button class="btn" data-loop="${k}" aria-pressed="false">Loop</button></div>
+        <div class="mini">${sizes}<span class="note">${v.small}</span></div>
+        <div class="chips" role="group" aria-label="${id}">${chipSet(id)}</div>
       </div>
     </article>`;
   }).join("");
-  observeSparks();
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { entrance(e.target.querySelector("svg.wq")); io.unobserve(e.target); }
+    }), { threshold: .5 });
+    document.querySelectorAll(".fm .st-box").forEach(el => io.observe(el));
+  }
 }
 
-let io;
-function observeSparks() {
-  if (io) io.disconnect();
-  if (!("IntersectionObserver" in window)) return;
-  io = new IntersectionObserver(entries => entries.forEach(e => {
-    if (e.isIntersecting) { playIntro(e.target.querySelector("svg.wq")); io.unobserve(e.target); }
-  }), { threshold: .5 });
-  document.querySelectorAll(".sp-stage").forEach(el => io.observe(el));
-}
-
-/* ---------- try it */
-function tryBoard() {
-  const s = DATA.sparks[trySpark];
-  const word = DATA.rounds.v2;
-  const liveLight = s.live.light.replace('class="wq ', 'class="wq try-logo ');
-  const liveDark = s.live.dark.replace('class="wq ', 'class="wq try-sting ');
-  const liveLoop = s.live.light.replace('class="wq ', 'class="wq wq-loop ');
+/* ---------- 3 · in use */
+function tryIt() {
+  const v = V[tryKey];
+  const keys = ["ignite", ...FORM_KEYS];
+  const tag = (svg, cls) => svg.replace('class="wq ', `class="wq ${cls} `);
   document.getElementById("try").innerHTML = `
-    <div class="pickrow"><b>Spark:</b>${SPARK_KEYS.map(k => `<button class="chip" id="try-${k}" data-try="${k}" aria-pressed="${k === trySpark}">${DATA.sparks[k].name}</button>`).join("")}</div>
+    <div class="pickrow"><b>Symbol:</b>${keys.map(k => `<button class="chip" id="try-${k}" data-try="${k}" aria-pressed="${k === tryKey}">${V[k].name}</button>`).join("")}</div>
     <div class="site">
-      <div class="chrome"><span class="dots"><i></i><i></i><i></i></span><div class="tab">${img(s.tile, "favicon", 'width="16" height="16"')}<span>وقّاد · نظام الجمعيات</span></div></div>
-      <header><a class="logo-live" href="#spark" aria-label="وقّاد">${liveLight}${img(DATA.wordmarkInk.light, "وقّاد")}</a>
+      <div class="chrome"><span class="dots"><i></i><i></i><i></i></span><div class="tab">${img(v.tile, "favicon", 'width="16" height="16"')}<span>وقّاد · نظام الجمعيات</span></div></div>
+      <header><a class="logo-live" href="#use" data-live aria-label="وقّاد">${tag(v.live.light, "t-head")}<span class="name">وقّاد</span></a>
         <nav><span>الرئيسية</span><span>معكم</span><span>الحلول</span><span>عن وقّاد</span></nav>
-        <button class="cta" type="button">اطلب عرضاً<span class="spk" aria-hidden="true"></span></button></header>
-      <div class="hero"><b>مرّر المؤشر على الشعار وعلى زر «اطلب عرضاً»</b><span>Hover over the logo and the button: this is how the spark would answer on the website.</span></div>
+        <button class="cta" type="button" data-live>اطلب عرضاً${tag(DATA.sparkIcon, "t-cta")}</button></header>
+      <div class="pagehero"><b>مرّر المؤشر على الشعار وعلى زر «اطلب عرضاً»</b><span>Hover over the logo and the button: this is how the symbol answers on the website.</span></div>
     </div>
     <div class="sting" id="sting">
-      <div class="frame">${liveDark}${img(DATA.wordmarkInk.dark, "وقّاد")}</div>
+      <div class="frame">${tag(v.live.dark, "t-sting")}<span class="name">وقّاد</span></div>
       <div class="line">أنظمة تصمد أمام التدقيق</div>
       <button class="btn primary play-btn" id="play-sting">▶ Play video intro</button>
     </div>
-    <div class="loader">${liveLoop}<span>جاري التحميل…</span><span style="font-family:var(--font-en);font-size:12px">The loop as a loading indicator</span></div>`;
+    <div class="loader">${tag(v.live.light, "t-loader")}<span>جاري التحميل…</span><span style="font-family:var(--font-en);font-size:12px">The loop as a loading indicator</span></div>`;
+  setLoop(document.querySelector(".t-loader"), true);
 }
 
-/* ---------- 3 · type board */
-function typeBoard() {
-  document.getElementById("types").innerHTML = TYPE_KEYS.map((key, i) => {
-    const t = DATA.type[key];
-    const id = i === 0 ? "TY-0" : `TY-${i}`;
-    return `<article class="ty">
-      <div class="ty-stages"><div class="l">${img(t.light, t.name + " lockup")}</div><div class="d">${img(t.dark, t.name + " on navy")}</div></div>
-      <div class="ty-body">
-        <h3><span class="id" style="font:600 12px var(--font-mono);color:var(--teal)">${id}</span>${t.name}<span class="ar">${t.ar}</span>${t.tag ? `<span class="face">· ${t.tag}</span>` : ""}</h3>
-        <span class="face">${t.face}</span>
-        <p>${t.idea}</p>
-        ${t.risk ? `<p class="risk">Watch out: ${t.risk}</p>` : ""}
-        <div class="ty-small">${img(t.wordmark, t.name, 'style="height:18px"')}${img(t.wordmark, t.name, 'style="height:28px"')}${img(t.light, t.name, 'style="height:36px"')}</div>
-        ${i === 0 ? "" : pickChips(id)}
-      </div>
-    </article>`;
-  }).join("");
+/* ---------- 4 · calls */
+const QS = [
+  { id: "F-1", h: "Where does the flame live?", p: "In motion only, the logo stays the diamond. Or in the static logo too, which means picking one of the five forms.", o: ["Motion only (Ignite)", "In the logo too"] },
+  { id: "F-2", h: "Flame colour", p: "Amber alone, or amber with a pale core (#FFE3A8). The core makes it read as real fire on screen but adds a fifth colour to the palette.", o: ["Amber + pale core", "Amber only"] },
+  { id: "F-3", h: "Which way does it lean?", p: "Left is forward for Arabic, the direction the eye reads. Right is forward for Latin. Upright is neutral and calm.", o: ["Left", "Upright", "Right"] },
+];
+function calls() {
+  document.getElementById("qs").innerHTML = QS.map(q => `<div class="q"><span class="id">${q.id}</span><h3>${q.h}</h3><p>${q.p}</p><div class="chips" role="group" aria-label="${q.id}">${q.o.map((o, i) =>
+    `<button class="chip" id="chip-${q.id}-${i}" data-q="${q.id}" data-o="${o}" aria-pressed="${picks[q.id] === o}">${o}</button>`).join("")}</div></div>`).join("");
 }
 
 /* ---------- reply */
 function replyText() {
   const lines = [];
-  SPARK_KEYS.forEach((k, i) => { const id = i === 0 ? "SP-0" : `SP-${i}`; if (picks[id]) lines.push(`${id} ${DATA.sparks[k].name}: ${picks[id]}`); });
-  TYPE_KEYS.forEach((k, i) => { const id = i === 0 ? "TY-0" : `TY-${i}`; if (picks[id]) lines.push(`${id} ${DATA.type[k].name}: ${picks[id]}`); });
+  if (picks["FL-0"]) lines.push(`FL-0 Ignite: ${picks["FL-0"]}`);
+  FORM_KEYS.forEach((k, i) => { const id = `FL-${i + 1}`; if (picks[id]) lines.push(`${id} ${V[k].name}: ${picks[id]}`); });
+  QS.forEach(q => { if (picks[q.id]) lines.push(`${q.id} ${q.h}: ${picks[q.id]}`); });
   document.getElementById("reply-text").textContent = lines.length ? lines.join("\n") : "(nothing marked yet)";
 }
 function fullReply() {
   const note = document.getElementById("reply-note").value.trim();
-  return (note ? note + "\n\n" : "") + "Logo Lab round 2 picks:\n" + document.getElementById("reply-text").textContent;
+  return (note ? note + "\n\n" : "") + "Logo Lab round 3 picks:\n" + document.getElementById("reply-text").textContent;
 }
 
-/* ---------- hover: the whole stage or logo link counts, not just the svg */
-document.addEventListener("mouseover", e => {
-  const host = e.target.closest(".sp-stage, .logo-live");
-  if (host && !host.contains(e.relatedTarget)) host.querySelector("svg.wq")?.classList.add("wq-hover");
-});
-document.addEventListener("mouseout", e => {
-  const host = e.target.closest(".sp-stage, .logo-live");
-  if (host && !host.contains(e.relatedTarget)) host.querySelector("svg.wq")?.classList.remove("wq-hover");
-});
-
-/* ---------- events */
 document.addEventListener("click", e => {
-  const t = e.target.closest("button, .sp-stage");
+  const t = e.target.closest("button, .st-box");
   if (!t) return;
-  if (t.dataset.r) { round = t.dataset.r; store.set("lab2-round", round); logoBoard(); return; }
-  if (t.dataset.bg) {
-    sparkBg = t.dataset.bg; store.set("lab2-bg", sparkBg);
-    document.querySelectorAll("[data-bg]").forEach(b => b.setAttribute("aria-pressed", b.dataset.bg === sparkBg));
-    sparkBoard(); return;
+  if (t.id === "hero-play") { document.querySelectorAll("#hero svg.wq").forEach(s => entrance(s, document.getElementById("hero-hold").getAttribute("aria-pressed") === "true")); return; }
+  if (t.id === "hero-hold") {
+    const on = t.getAttribute("aria-pressed") !== "true"; t.setAttribute("aria-pressed", on);
+    document.querySelectorAll("#hero svg.wq").forEach(s => { s.dataset.hold = on ? "1" : ""; on ? ignite(s) : settle(s); }); return;
   }
-  if (t.dataset.play) { playIntro(document.querySelector(`[data-stage="${t.dataset.play}"] svg`)); return; }
+  if (t.id === "hero-loop") {
+    const on = t.getAttribute("aria-pressed") !== "true"; t.setAttribute("aria-pressed", on);
+    document.querySelectorAll("#hero svg.wq").forEach(s => setLoop(s, on)); return;
+  }
+  if (t.dataset.play) { entrance(document.querySelector(`[data-stage="${t.dataset.play}"] svg.wq`)); return; }
   if (t.dataset.loop) {
-    const on = t.getAttribute("aria-pressed") !== "true";
-    t.setAttribute("aria-pressed", on); t.textContent = on ? "Stop loop" : "Loop";
-    setLoop(document.querySelector(`[data-stage="${t.dataset.loop}"] svg`), on); return;
+    const on = t.getAttribute("aria-pressed") !== "true"; t.setAttribute("aria-pressed", on); t.textContent = on ? "Stop loop" : "Loop";
+    setLoop(document.querySelector(`[data-stage="${t.dataset.loop}"] svg.wq`), on); return;
   }
-  if (t.classList.contains("sp-stage")) { playIntro(t.querySelector("svg")); return; }
-  if (t.id === "play-all") { document.querySelectorAll(".sp-stage svg").forEach((s, i) => setTimeout(() => playIntro(s), i * 120)); return; }
+  if (t.id === "play-all") { document.querySelectorAll(".fm svg.wq").forEach((s, i) => setTimeout(() => entrance(s), i * 120)); return; }
   if (t.id === "loop-all") {
-    const on = t.getAttribute("aria-pressed") !== "true";
-    t.setAttribute("aria-pressed", on); t.textContent = on ? "Stop all loops" : "Loop all";
-    document.querySelectorAll(".sp-stage svg").forEach(s => setLoop(s, on));
-    document.querySelectorAll("[data-loop]").forEach(b => { b.setAttribute("aria-pressed", on); b.textContent = on ? "Stop loop" : "Loop"; });
-    return;
+    const on = t.getAttribute("aria-pressed") !== "true"; t.setAttribute("aria-pressed", on); t.textContent = on ? "Stop all loops" : "Loop all";
+    document.querySelectorAll(".fm svg.wq").forEach(s => setLoop(s, on));
+    document.querySelectorAll("[data-loop]").forEach(b => { b.setAttribute("aria-pressed", on); b.textContent = on ? "Stop loop" : "Loop"; }); return;
   }
-  if (t.dataset.try) { trySpark = t.dataset.try; store.set("lab2-try", trySpark); tryBoard(); return; }
+  if (t.dataset.try) { tryKey = t.dataset.try; store.set("lab3-try", tryKey); tryIt(); return; }
   if (t.id === "play-sting") {
     const st = document.getElementById("sting");
     st.classList.remove("play"); void st.offsetWidth; st.classList.add("play");
-    playIntro(st.querySelector("svg.wq")); return;
+    entrance(st.querySelector("svg.wq")); return;
   }
   if (t.dataset.q) {
     const q = t.dataset.q, o = t.dataset.o;
     if (picks[q] === o) delete picks[q]; else picks[q] = o;
-    store.set("lab2-picks", picks);
+    store.set("lab3-picks", picks);
     document.querySelectorAll(`.chip[data-q="${q}"]`).forEach(c => c.setAttribute("aria-pressed", picks[q] === c.dataset.o));
     replyText(); return;
   }
@@ -516,16 +439,13 @@ document.addEventListener("click", e => {
     const done = () => { t.textContent = "Copied"; setTimeout(() => t.textContent = "Copy reply", 1600); };
     const fallback = () => { const ta = document.getElementById("reply-note"); ta.value = fullReply(); ta.select(); t.textContent = "Selected, press Ctrl+C"; };
     try { navigator.clipboard.writeText(fullReply()).then(done, fallback); } catch (x) { fallback(); }
+    return;
   }
+  if (t.classList.contains("st-box") && !t.closest("#hero")) { entrance(t.querySelector("svg.wq")); }
 });
 
 const noteEl = document.getElementById("reply-note");
-noteEl.value = store.get("lab2-note", "");
-noteEl.addEventListener("input", () => store.set("lab2-note", noteEl.value));
-document.querySelectorAll("[data-bg]").forEach(b => b.setAttribute("aria-pressed", b.dataset.bg === sparkBg));
-logoBoard();
-sparkBoard();
-tryBoard();
-typeBoard();
-replyText();
+noteEl.value = store.get("lab3-note", "");
+noteEl.addEventListener("input", () => store.set("lab3-note", noteEl.value));
+hero(); forms(); tryIt(); calls(); replyText();
 </script>

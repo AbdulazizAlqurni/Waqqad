@@ -575,29 +575,40 @@ def write_lab(data):
                 + head + "</style>\n</head>\n<body>\n" + body + "\n</body>\n</html>\n")
 
 
+def build_symbol():
+    """Round 3: the symbol and its flame. Writes v3/symbol/ and returns Lab data."""
+    import symbol as S
+    out = os.path.join(HERE, "v3", "symbol")
+    with open(os.path.join(HERE, "spark-motion.css"), encoding="utf-8") as f:
+        css_min = re.sub(r"\s+", " ", re.sub(r"/\*.*?\*/", "", f.read(), flags=re.S)).strip()
+    os.makedirs(out, exist_ok=True)
+    data = {}
+    for v, meta in S.VARIANTS.items():
+        files = {}
+        view = S.bbox_view(v)
+        for name in ("light", "dark", "mono"):
+            th = THEMES[name]
+            files[name] = S.mark_svg(v, th, view=view, bg=th["bg"])
+        files["tile"] = S.tile_svg(v, dark=THEMES["dark"])
+        files["motion"] = S.mark_svg(v, THEMES["light"], loop_file=True, cls_extra=" wq-loop")
+        files["motion_dark"] = S.mark_svg(v, THEMES["dark"], loop_file=True, cls_extra=" wq-loop", bg=COLOR["navy"])
+        for k in ("motion", "motion_dark"):  # the small diamonds move with CSS: ship it inside
+            head, _, rest = files[k].partition(">")
+            files[k] = head + "><style>" + css_min + "</style>" + rest
+        for k, svg in files.items():
+            with open(os.path.join(out, f"{v}_{k}.svg"), "w", encoding="utf-8") as f:
+                f.write(svg)
+        data[v] = dict(meta, light=files["light"], tile=files["tile"],
+                       live={"light": S.mark_svg(v, THEMES["light"], live=True),
+                             "dark": S.mark_svg(v, THEMES["dark"], live=True)})
+    return data
+
+
 if __name__ == "__main__":
-    v2, live, css = build()
-    v1 = read_dir(os.path.join(HERE, "v1"))
-    v0 = read_dir(RECEIVED)
-    # round-to-round view of the main logo: same keys across rounds
-    rounds = {
-        "v2": {k: v2[k] for k in ("lockup", "lockup_dark", "lockup_mono", "mark", "tile",
-                                   "logotype", "logotype_dark", "favicon_logotype")},
-        "v1": {"lockup": v1["A_lockup"], "lockup_dark": v1["A_lockup_dark"], "lockup_mono": v1["A_lockup_mono"],
-               "mark": v1["A_mark"], "tile": v1["A_tile"], "logotype": v1["B_logotype"],
-               "logotype_dark": v1["B_logotype_dark"], "favicon_logotype": v1["B_favicon"]},
-        "v0": {"lockup": v0["A_lockup"], "lockup_dark": v0["A_lockup_dark"], "mark": v0["A_mark"],
-               "logotype": v0["B_logotype"], "logotype_dark": v0["B_logotype_dark"],
-               "favicon_logotype": v0["B_favicon"]},
-    }
-    data = {
-        "rounds": rounds,
-        "sparks": {k: dict(SPARKS[k], live=live[k], light=v2[f"spark/{k}_light"], dark=v2[f"spark/{k}_dark"],
-                           tile=v2[f"spark/{k}_tile"], mono=v2[f"spark/{k}_mono"]) for k in SPARKS},
-        "type": {k: dict(TYPE[k], light=v2[f"type/{k}_lockup_light"], dark=v2[f"type/{k}_wordmark_dark"],
-                         wordmark=v2[f"type/{k}_wordmark_light"]) for k in TYPE},
-        "wordmarkInk": {"light": v2["wordmark_ink"], "dark": v2["wordmark_ink_dark"]},
-        "css": css,
-    }
+    build()  # round 2 files stay reproducible
+    with open(os.path.join(HERE, "spark-motion.css"), encoding="utf-8") as f:
+        css = f.read()
+    import symbol as S
+    data = {"variants": build_symbol(), "sparkIcon": S.spark_only_svg(THEMES["dark"]), "css": css}
     write_lab(data)
-    print(f"v2: {len(v2)} files -> {OUT}; lab page -> brand/logo-lab.html")
+    print("v3 symbol ->", os.path.join(OUT.replace("v2", "v3"), "symbol"), "; lab page -> brand/logo-lab.html")
