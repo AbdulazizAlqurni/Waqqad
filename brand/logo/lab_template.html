@@ -3,8 +3,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: a review board. Sticky round bar, then one board per direction:
-   stages (light / navy), size ladder, in-context mockups, then the notes. */
+/* Layout: a review board. Sticky round bar, then three boards:
+   the logo (picks applied), the spark (five motions), the type (five voices). */
 :root {
   --paper: #F3F5F8;      /* brand Mist */
   --card: #FFFFFF;
@@ -35,58 +35,62 @@
 * { box-sizing: border-box; }
 body { background: var(--paper); color: var(--ink); font: 15px/1.55 var(--font-en); margin: 0; }
 .wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 0 64px; }
-.ar { font-family: var(--font-ar); }
 h1, h2, h3 { text-wrap: balance; margin: 0; }
-.mono { font-family: var(--font-mono); font-size: 12px; letter-spacing: .02em; }
+p { margin: 0; }
+button { font-family: inherit; }
 
 /* round bar */
 .bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--paper) 88%, transparent);
   backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
-.bar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding-block: 12px; }
+.bar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; padding-block: 12px; }
 .brandline { display: flex; align-items: baseline; gap: 10px; margin-inline-end: auto; }
 .brandline b { font: 700 20px/1 var(--font-ar); }
 .brandline span { color: var(--muted); font-size: 13px; }
+.jump { display: flex; gap: 6px; flex-wrap: wrap; }
+.jump a { font: 600 13px var(--font-en); color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; background: var(--card); }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--card); }
 .seg button { font: 500 13px var(--font-en); color: var(--muted); background: none; border: 0; padding: 7px 12px; cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
-.seg button:focus-visible, .chip:focus-visible, .copy:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
-.jump { display: flex; gap: 6px; }
-.jump a { font: 600 13px var(--font-en); color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; background: var(--card); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.btn { font: 600 13px var(--font-en); border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+.btn.primary { background: var(--amber); border-color: var(--amber); color: #0B1F3A; }
 
 /* intro */
-.intro { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; padding-block: 40px 28px; align-items: end; }
+.intro { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 32px; padding-block: 40px 28px; align-items: start; }
 .intro h1 { font: 600 34px/1.15 var(--font-en); letter-spacing: -.01em; }
-.intro p { color: var(--muted); max-width: 62ch; margin: 12px 0 0; }
-.palette { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
-.sw { border-radius: 8px; height: 64px; padding: 8px; display: flex; flex-direction: column; justify-content: flex-end; font: 500 11px/1.3 var(--font-mono); border: 1px solid var(--line); }
-.sw.flag { outline: 2px dashed var(--amber); outline-offset: 2px; }
+.intro p { color: var(--muted); max-width: 62ch; margin-top: 12px; }
+.applied { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+.applied h3 { font: 600 12px var(--font-en); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.applied ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; font-size: 14px; }
+.applied li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; }
+.applied .id { font: 600 12px var(--font-mono); color: var(--teal); padding-top: 2px; }
+.applied li.gone .id { color: #B4562F; }
 
-/* direction board */
-.dir { border-top: 1px solid var(--line); padding-block: 40px 8px; scroll-margin-top: 70px; }
-.dir-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin-bottom: 20px; }
-.letter { font: 600 13px var(--font-mono); background: var(--ink); color: var(--paper); border-radius: 6px; padding: 3px 9px; }
-.dir-head h2 { font: 600 26px/1.2 var(--font-en); }
-.dir-head h2 .ar { font-weight: 700; margin-inline-start: 6px; }
-.dir-head .score { margin-inline-start: auto; color: var(--muted); font: 500 13px var(--font-mono); }
-.dir-head .idea { flex-basis: 100%; color: var(--muted); max-width: 70ch; margin: 0; }
+/* section shell */
+.sec { border-top: 1px solid var(--line); padding-block: 44px 8px; scroll-margin-top: 70px; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin-bottom: 22px; }
+.sec-head .num { font: 600 13px var(--font-mono); background: var(--ink); color: var(--paper); border-radius: 6px; padding: 3px 9px; }
+.sec-head h2 { font: 600 26px/1.2 var(--font-en); }
+.sec-head h2 .ar { font: 700 24px var(--font-ar); margin-inline-start: 8px; }
+.sec-head .tools { margin-inline-start: auto; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.sec-head .lede { flex-basis: 100%; color: var(--muted); max-width: 72ch; }
+.subhead { font: 600 12px var(--font-en); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 28px 0 10px; }
 
+/* logo board */
 .stages { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
-.stage { border-radius: 12px; min-height: 260px; display: grid; place-items: center; padding: 28px; position: relative; }
+.stage { border-radius: 12px; min-height: 240px; display: grid; place-items: center; padding: 28px; position: relative; }
 .stage.light { background: var(--stage-light); border: 1px solid var(--line); }
 .stage.dark { background: var(--navy); }
-.stage img { max-width: 100%; max-height: 210px; width: auto; height: auto; display: block; }
-.stage .tag { position: absolute; inset-block-start: 10px; inset-inline-start: 12px; font: 500 11px var(--font-mono); color: #8494AA; }
+.stage img { max-width: 100%; max-height: 190px; width: auto; height: auto; display: block; }
+.tag { position: absolute; inset-block-start: 10px; inset-inline-start: 12px; font: 500 11px var(--font-mono); color: #8494AA; }
 .missing { font: 500 13px var(--font-mono); color: #8494AA; border: 1px dashed currentColor; border-radius: 8px; padding: 10px 14px; text-align: center; }
-
-.subhead { font: 600 12px var(--font-en); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 28px 0 10px; }
-.row { display: grid; gap: 12px; }
 .ladder { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
 .ladder > div { border-radius: 12px; padding: 18px 18px 12px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 18px 22px; }
 .ladder .l { background: var(--stage-light); border: 1px solid var(--line); }
 .ladder .d { background: #DFE5ED; }
-.ladder figure { margin: 0; display: grid; justify-items: center; gap: 6px; }
-.ladder figcaption { font: 500 10px var(--font-mono); color: #8494AA; }
-.ladder img { display: block; image-rendering: auto; }
+figure { margin: 0; }
+.ladder figure, .mini figure { display: grid; justify-items: center; gap: 6px; }
+figcaption { font: 500 10px var(--font-mono); color: #8494AA; }
 
 /* contexts */
 .ctx { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; }
@@ -98,32 +102,28 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
 .site .dots { display: flex; gap: 5px; margin-inline-end: 6px; }
 .site .dots i { width: 9px; height: 9px; border-radius: 50%; background: #C7CFDA; display: block; }
 .site header { direction: rtl; display: flex; align-items: center; gap: 24px; padding: 16px 24px; border-bottom: 1px solid #E6EAF0; flex-wrap: wrap; }
-.site header img { height: 40px; width: auto; }
+.site header > img { height: 40px; width: auto; }
 .site nav { display: flex; gap: 20px; font: 500 14px var(--font-ar); color: #0B1F3A; margin-inline-end: auto; flex-wrap: wrap; }
-.site .cta { font: 600 13px var(--font-ar); background: #007C91; color: #fff; border-radius: 8px; padding: 8px 14px; }
+.site .cta { font: 600 13px var(--font-ar); background: #007C91; color: #fff; border-radius: 8px; padding: 8px 14px; border: 0; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
 .site .hero { direction: rtl; padding: 28px 24px 34px; font-family: var(--font-ar); color: #0B1F3A; }
 .site .hero b { display: block; font-size: 24px; font-weight: 700; }
 .site .hero span { color: #5A6B82; font-size: 14px; }
-
 .card-mock { grid-column: span 5; background: var(--navy); aspect-ratio: 85 / 55; max-width: 100%; padding: 7%; display: flex; flex-direction: column; justify-content: space-between; direction: rtl; color: #fff; box-shadow: 0 10px 30px -18px rgba(11, 31, 58, .7); }
-.card-mock img { height: 30%; width: auto; max-width: 70%; align-self: flex-start; }
+.card-mock img { height: 34%; width: auto; max-width: 75%; align-self: flex-start; }
 .card-mock .who { font: 13px/1.5 var(--font-ar); }
 .card-mock .who b { display: block; font-size: 15px; }
 .card-mock .who .en { font-family: var(--font-en); color: #9FB0C6; font-size: 12px; }
-.card-mock .who .url { color: #7FD1DE; font-family: var(--font-en); font-size: 12px; }
-
+.card-mock .who .url { color: #fff; opacity: .8; font-family: var(--font-en); font-size: 12px; }
 .phone { grid-column: span 4; background: linear-gradient(160deg, #1D3557, #0B1F3A 60%, #00303A); padding: 20px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 10px; align-content: start; }
 .phone .app { display: grid; justify-items: center; gap: 4px; font: 10px var(--font-ar); color: #E7ECF3; }
 .phone .app i { width: 48px; height: 48px; border-radius: 12px; background: rgba(255, 255, 255, .16); display: block; }
 .phone .app img { width: 48px; height: 48px; display: block; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .35)); }
-
 .chat { grid-column: span 3; background: var(--card); border: 1px solid var(--line); padding: 14px; display: grid; gap: 10px; align-content: start; }
 .chat .row1 { display: flex; align-items: center; gap: 10px; direction: rtl; }
 .chat .av { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; flex: none; background: var(--navy); }
 .chat .av img { width: 100%; height: 100%; display: block; }
 .chat .t { font: 600 14px var(--font-ar); }
 .chat .s { font: 12px var(--font-ar); color: var(--muted); }
-
 .stamp { grid-column: span 12; background: #FBFAF6; border: 1px solid var(--line); padding: 22px 26px; display: flex; gap: 28px; align-items: center; flex-wrap: wrap; direction: rtl; }
 .stamp .doc { font: 13px/1.9 var(--font-ar); color: #3A4658; flex: 1 1 280px; min-width: 0; }
 .stamp .doc b { color: #0B1F3A; }
@@ -131,31 +131,95 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
 .stamp .seal img { height: 54px; width: auto; filter: url(#ink); }
 .stamp .seal span { font: 600 11px var(--font-ar); color: #1F3A73; }
 
-/* notes */
-.notes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-top: 28px; }
-.panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; min-width: 0; }
-.panel h3 { font: 600 15px var(--font-en); margin-bottom: 10px; display: flex; gap: 8px; align-items: center; }
-.panel h3 .dot { width: 8px; height: 8px; border-radius: 50%; }
-.panel ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-.panel li { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 8px; }
-.panel li .id { font: 600 12px var(--font-mono); color: var(--teal); padding-top: 2px; }
-.panel li p { margin: 0; }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+/* spark board */
+.sparks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.sp { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.sp-stage { position: relative; aspect-ratio: 4 / 3; display: grid; place-items: center; cursor: pointer; }
+.sp-stage.dark { background: var(--navy); }
+.sp-stage.light { background: #FFFFFF; border-bottom: 1px solid var(--line); }
+.sp-stage svg { width: 62%; height: auto; max-height: 92%; overflow: visible; }
+.sp-stage .hint { position: absolute; inset-block-end: 10px; inset-inline-end: 12px; font: 500 11px var(--font-mono); color: #8494AA; }
+.sp-stage .badge { position: absolute; inset-block-start: 10px; inset-inline-start: 12px; font: 600 11px var(--font-mono); color: #0B1F3A; background: var(--amber); border-radius: 5px; padding: 2px 7px; }
+.sp-body { padding: 14px 16px 16px; display: grid; gap: 10px; flex: 1; align-content: start; }
+.sp-body h3 { font: 600 18px var(--font-en); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.sp-body h3 .ar { font: 700 17px var(--font-ar); color: var(--muted); }
+.sp-body .id { font: 600 12px var(--font-mono); color: var(--teal); }
+.sp-body p { font-size: 14px; }
+.sp-body .motion { color: var(--muted); font-size: 13px; }
+.sp-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.mini { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; padding: 10px 12px; background: var(--paper); border-radius: 10px; }
+.mini img { display: block; }
+.mini .note { font-size: 12px; color: var(--muted); flex-basis: 100%; }
+
+/* try it */
+.try { margin-top: 28px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; }
+.try > * { min-width: 0; border-radius: 14px; }
+.try .pickrow { grid-column: span 12; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.try .pickrow b { font: 600 13px var(--font-en); margin-inline-end: 4px; }
+.try .site { grid-column: span 12; }
+.logo-live { display: inline-flex; align-items: center; gap: 10px; direction: rtl; cursor: pointer; text-decoration: none; }
+.logo-live svg { height: 46px; width: auto; overflow: visible; }
+.logo-live img { height: 34px; width: auto; display: block; }
+.cta .spk { width: 9px; height: 9px; background: var(--amber); border-radius: 1.5px; transform: rotate(45deg); transition: transform .45s cubic-bezier(.2, .9, .25, 1.3); }
+.cta:hover .spk { transform: translateY(-4px) rotate(225deg) scale(1.25); }
+.sting { grid-column: span 8; background: var(--navy); aspect-ratio: 16 / 9; position: relative; overflow: hidden; display: grid; place-items: center; }
+.sting .frame { display: flex; align-items: center; gap: 4%; direction: rtl; width: 78%; justify-content: center; }
+.sting svg { width: 30%; height: auto; overflow: visible; flex: none; }
+.sting img { width: 46%; height: auto; display: block; opacity: 1; transform: none; }
+.sting.play img { animation: sting-word .8s 1.25s cubic-bezier(.2, .8, .2, 1) both; }
+.sting .line { position: absolute; inset-block-end: 9%; inset-inline: 0; text-align: center; font: 500 clamp(11px, 1.6vw, 15px) var(--font-ar); color: #C9D5E4; }
+.sting.play .line { animation: sting-line .7s 2s ease-out both; }
+.sting .play-btn { position: absolute; inset-block-start: 12px; inset-inline-start: 12px; }
+@keyframes sting-word { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
+@keyframes sting-line { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.loader { grid-column: span 4; background: var(--card); border: 1px solid var(--line); display: grid; place-items: center; align-content: center; gap: 14px; padding: 20px; }
+.loader svg { width: 72px; height: auto; overflow: visible; }
+.loader span { font: 13px var(--font-ar); color: var(--muted); }
+
+/* type board */
+.types { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.ty { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.ty-stages { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+.ty-stages > div { display: grid; place-items: center; padding: 22px 18px; min-height: 170px; position: relative; }
+.ty-stages .l { background: #FFFFFF; border-bottom: 1px solid var(--line); }
+.ty-stages .d { background: var(--navy); }
+.ty-stages img { max-width: 100%; max-height: 120px; width: auto; height: auto; display: block; }
+.ty-body { padding: 14px 16px 16px; display: grid; gap: 8px; }
+.ty-body h3 { font: 600 18px var(--font-en); display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.ty-body h3 .ar { font: 700 17px var(--font-ar); color: var(--muted); }
+.ty-body .face { font: 500 12px var(--font-mono); color: var(--muted); }
+.ty-body p { font-size: 14px; }
+.ty-body .risk { font-size: 13px; color: var(--muted); }
+.ty-small { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; padding: 8px 12px; background: var(--paper); border-radius: 10px; }
+.ty-small img { display: block; width: auto; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { font: 500 12px var(--font-en); border: 1px solid var(--line); background: var(--chip); color: var(--ink); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
 .chip[aria-pressed="true"] { background: var(--amber); border-color: var(--amber); color: #0B1F3A; }
+.chip[data-o="No"][aria-pressed="true"] { background: #C4623A; border-color: #C4623A; color: #fff; }
 
-.reply { margin-top: 40px; background: var(--navy); color: #E7ECF3; border-radius: 14px; padding: 22px 24px; display: grid; gap: 12px; }
+.reply { margin-top: 44px; background: var(--navy); color: #E7ECF3; border-radius: 14px; padding: 22px 24px; display: grid; gap: 12px; scroll-margin-top: 70px; }
 .reply h2 { font: 600 20px var(--font-en); }
-.reply p { margin: 0; color: #9FB0C6; max-width: 70ch; }
-.reply textarea { width: 100%; min-height: 110px; resize: vertical; border-radius: 10px; border: 1px solid #23406B; background: #0F2747; color: #fff; font: 13px/1.6 var(--font-mono); padding: 12px; }
-.copy { justify-self: start; font: 600 13px var(--font-en); background: var(--amber); color: #0B1F3A; border: 0; border-radius: 8px; padding: 9px 16px; cursor: pointer; }
+.reply p { color: #9FB0C6; max-width: 70ch; }
+.reply textarea { width: 100%; min-height: 100px; resize: vertical; border-radius: 10px; border: 1px solid #23406B; background: #0F2747; color: #fff; font: 13px/1.6 var(--font-mono); padding: 12px; }
+.reply pre { margin: 0; white-space: pre-wrap; color: #C9D5E4; font: 13px/1.6 var(--font-mono); }
 
-@media (max-width: 860px) {
-  .intro, .stages, .ladder, .notes { grid-template-columns: minmax(0, 1fr); }
-  .card-mock, .phone, .chat { grid-column: span 12; }
-  .palette { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 960px) {
+  .sparks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .types { grid-template-columns: minmax(0, 1fr); }
 }
-@media (prefers-reduced-motion: no-preference) { .stage img { transition: opacity .2s; } }
+@media (max-width: 860px) {
+  .intro, .stages, .ladder { grid-template-columns: minmax(0, 1fr); }
+  .card-mock, .phone, .chat, .sting, .loader { grid-column: span 12; }
+}
+@media (max-width: 600px) {
+  .sparks, .ty-stages { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sting.play img, .sting.play .line, .cta .spk { animation: none !important; transition: none !important; }
+}
+
+/*MOTION_CSS*/
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -164,152 +228,304 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
 
 <div class="bar">
   <div class="wrap">
-    <div class="brandline"><b>وقّاد</b><span>Logo Lab · Round 1 · 8 Oct 2026</span></div>
-    <div class="seg" role="group" aria-label="Version">
-      <button id="v-v1" data-v="v1" aria-pressed="true">Round 1</button>
-      <button id="v-v0" data-v="v0" aria-pressed="false">As received</button>
-    </div>
-    <nav class="jump" aria-label="Directions"><a href="#A">A</a><a href="#B">B</a><a href="#C">C</a><a href="#reply">Reply</a></nav>
+    <div class="brandline"><b>وقّاد</b><span>Logo Lab · Round 2 · 9 Oct 2026</span></div>
+    <nav class="jump" aria-label="Sections"><a href="#logo">Logo</a><a href="#spark">Spark</a><a href="#type">Type</a><a href="#reply">Reply</a></nav>
   </div>
 </div>
 
 <div class="wrap">
   <section class="intro">
     <div>
-      <h1>Three directions, one spark. Every size, every surface.</h1>
-      <p>Each direction is shown on paper and on navy, from 16&nbsp;px up, and in the places it will live: a browser tab, a phone, a WhatsApp chat, a business card and a stamped contract. Switch between <b>Round&nbsp;1</b> (my fixes) and <b>As received</b> to see what changed. Pick options under each direction and copy your reply at the bottom.</p>
+      <h1>One mark. Five ways to make it spark, five voices for the name.</h1>
+      <p>Your round 1 picks are now applied to the logo. The و monogram is retired. The spark section shows five new ways for the diamond to become a spark. Each one moves: hover over it, play its entrance, or loop it. The type section sets وقّاد in five new voices beside the mark. Mark each variant Favourite, Maybe or No, and copy your reply at the bottom.</p>
     </div>
-    <div class="palette" id="palette"></div>
+    <div class="applied" id="applied"></div>
   </section>
-  <div id="dirs"></div>
+
+  <section class="sec" id="logo">
+    <div class="sec-head">
+      <span class="num">1</span><h2>The logo<span class="ar">الشعار</span></h2>
+      <div class="tools"><div class="seg" role="group" aria-label="Round">
+        <button id="r-v2" data-r="v2" aria-pressed="true">Round 2</button>
+        <button id="r-v1" data-r="v1" aria-pressed="false">Round 1</button>
+        <button id="r-v0" data-r="v0" aria-pressed="false">As received</button>
+      </div></div>
+      <p class="lede">The mark with the bolder lift and the spark only in the mark. Below it, the logotype on its own (old direction B), now in the same lighter Kufi so the name has one shape everywhere.</p>
+    </div>
+    <div id="logo-board"></div>
+  </section>
+
+  <section class="sec" id="spark">
+    <div class="sec-head">
+      <span class="num">2</span><h2>The spark<span class="ar">الشرارة</span></h2>
+      <div class="tools">
+        <div class="seg" role="group" aria-label="Background">
+          <button id="bg-dark" data-bg="dark" aria-pressed="true">Navy</button>
+          <button id="bg-light" data-bg="light" aria-pressed="false">Paper</button>
+        </div>
+        <button class="btn" id="play-all">Play all entrances</button>
+        <button class="btn" id="loop-all" aria-pressed="false">Loop all</button>
+      </div>
+      <p class="lede">The diamond stays the hero in every variant. What changes is how it becomes a spark. Hover over a stage to see the hover effect. The buttons play the entrance (for a video intro or page load) and the loop (for loaders and backgrounds). Each one is also built as a looping SVG file.</p>
+    </div>
+    <div class="sparks" id="sparks"></div>
+
+    <div class="subhead">Try it on the website and in a video</div>
+    <div class="try" id="try"></div>
+  </section>
+
+  <section class="sec" id="type">
+    <div class="sec-head">
+      <span class="num">3</span><h2>The type<span class="ar">الخط</span></h2>
+      <p class="lede">The same lockup with five other voices for the name. Each one keeps your round 1 choices: the spark in the mark only, WAQQAD spaced under د ا ق. On navy, the name alone carries the amber spark as its shadda. The strip under each one shows the name at email-signature and footer sizes.</p>
+    </div>
+    <div class="types" id="types"></div>
+  </section>
+
   <section class="reply" id="reply">
-    <h2>Your reply for round 2</h2>
-    <p>Write what you like and what bothers you. Your picks from above are added underneath. Then copy it all into our chat.</p>
-    <textarea id="reply-note" aria-label="Your notes" placeholder="Leading direction, what you like, what bothers you…"></textarea>
-    <pre id="reply-text" class="mono" style="margin:0;white-space:pre-wrap;color:#C9D5E4"></pre>
-    <button class="copy" id="copy">Copy reply</button>
+    <h2>Your reply for round 3</h2>
+    <p>Write what you like and what bothers you. Your Favourite, Maybe and No marks are added underneath. Then copy it all into our chat.</p>
+    <textarea id="reply-note" aria-label="Your notes" placeholder="Which spark, which voice, and why…"></textarea>
+    <pre id="reply-text"></pre>
+    <button class="btn primary" id="copy" style="justify-self:start">Copy reply</button>
   </section>
 </div>
 
 <script>
 const DATA = /*DATA*/{};
-const NOTES = /*NOTES*/{};
 
 const uri = s => "data:image/svg+xml;charset=utf-8," + encodeURIComponent(s);
-let version = "v1";
-try { version = localStorage.getItem("lab-version") || "v1"; } catch (e) {}
-let picks = {};
-try { picks = JSON.parse(localStorage.getItem("lab-picks") || "{}"); } catch (e) {}
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+};
+let round = store.get("lab2-round", "v2");
+let sparkBg = store.get("lab2-bg", "dark");
+let picks = store.get("lab2-picks", {});
+let trySpark = store.get("lab2-try", "lift");
+const SPARK_KEYS = Object.keys(DATA.sparks);
+const TYPE_KEYS = Object.keys(DATA.type);
 
-function img(key, attrs = "") {
-  const svg = DATA[version][key];
-  if (!svg) return `<div class="missing">${key}<br>not in ${version === "v0" ? "the drafts" : "this round"}</div>`;
-  return `<img src="${uri(svg)}" alt="${key.replace(/_/g, " ")}" ${attrs}>`;
+function img(svg, alt, attrs = "") {
+  if (!svg) return `<div class="missing">${alt}<br>not in this round</div>`;
+  return `<img src="${uri(svg)}" alt="${alt}" ${attrs}>`;
 }
 
-function palette() {
-  const sw = [
-    ["Navy", "#0B1F3A", "#fff"], ["Teal", "#007C91", "#fff"], ["Amber", "#F2A93B", "#0B1F3A"],
-    ["Mist", "#F3F5F8", "#0B1F3A"], ["Teal Light?", "#7FD1DE", "#0B1F3A", true],
-  ];
-  document.getElementById("palette").innerHTML = sw.map(([n, h, c, f]) =>
-    `<div class="sw${f ? " flag" : ""}" style="background:${h};color:${c}" title="${f ? "Used in the drafts on navy but missing from the palette (see S-1)" : ""}"><b>${n}</b>${h}</div>`).join("");
-}
+/* ---------- applied picks */
+document.getElementById("applied").innerHTML = `<h3>Applied from round 1</h3><ul>
+  <li><span class="id">A-5</span><span>The spark lives in the mark only. The shadda is navy in the lockup.</span></li>
+  <li><span class="id">A-6</span><span>The spark lifts 10 units, not 7.</span></li>
+  <li><span class="id">A-7·8</span><span>Corners stay 2.2, and WAQQAD stays spaced across د ا ق.</span></li>
+  <li><span class="id">B-5·6</span><span>The logotype keeps its favicon and now uses the lighter Kufi.</span></li>
+  <li><span class="id">S-3</span><span>On navy, the Latin and the rule are white. Light teal is gone.</span></li>
+  <li class="gone"><span class="id">C</span><span>The و monogram is retired, as you asked. C-4 to C-6 no longer apply.</span></li>
+</ul>`;
 
-function ladder(key, bgClass) {
-  return [16, 24, 32, 48, 64, 96].map(px =>
-    `<figure>${img(key, `width="${px}" height="${px}" style="width:${px}px;height:${px}px"`)}<figcaption>${px}</figcaption></figure>`).join("");
-}
-
-function dirHTML(d) {
-  const n = NOTES[d];
-  const k = n.keys;
-  const site = `<div class="site">
-      <div class="chrome"><span class="dots"><i></i><i></i><i></i></span><div class="tab">${img(k.icon, 'width="16" height="16"')}<span>وقّاد · نظام الجمعيات</span></div></div>
-      <header>${img(k.lockup)}<nav><span>الرئيسية</span><span>معكم</span><span>الحلول</span><span>عن وقّاد</span></nav><span class="cta">اطلب عرضاً</span></header>
-      <div class="hero"><b>نظام الجمعيات المبني للحوكمة</b><span>أنظمة تصمد أمام التدقيق</span></div>
-    </div>`;
-  const card = `<div class="card-mock">${img(k.lockupDark)}<div class="who"><b>عبدالعزيز القرني</b>الشريك المدير <span class="en">· Managing Partner</span><br><span class="url">waqqad.sa</span></div></div>`;
+/* ---------- 1 · logo board */
+function logoBoard() {
+  const R = DATA.rounds[round];
+  const k = (key, alt, attrs) => img(R[key], alt || key, attrs);
+  const ladder = (key) => [16, 24, 32, 48, 64, 96].map(px =>
+    `<figure>${k(key, key, `width="${px}" height="${px}" style="width:${px}px;height:${px}px"`)}<figcaption>${px}</figcaption></figure>`).join("");
   const apps = ["التقويم", "البريد", "الصور", "الخرائط", "الملاحظات", "", "الطقس", "الإعدادات"];
-  const phone = `<div class="phone">${apps.map(a => a === "" ? `<div class="app">${img(k.icon)}<span>وقّاد</span></div>` : `<div class="app"><i></i><span>${a}</span></div>`).join("")}</div>`;
-  const chat = `<div class="chat">
-      <div class="row1"><div class="av">${img(k.icon)}</div><div><div class="t">وقّاد</div><div class="s">حساب أعمال · متصل</div></div></div>
-      <div class="row1"><div class="av" style="width:28px;height:28px">${img(k.icon)}</div><div class="s">تم إرسال العرض الفني والمالي</div></div>
-    </div>`;
-  const stamp = `<div class="stamp">
-      <div class="doc"><b>عقد تقديم خدمات تقنية</b><br>يلتزم الطرف الثاني (وقّاد) بتسليم المرحلة الأولى خلال ستين يوماً من تاريخ توقيع هذا العقد، وفق نطاق العمل الموضح في الملحق (أ).</div>
-      <div class="seal">${img(k.mono)}<span>معتمد</span></div>
-    </div>`;
-
-  const list = (items, open) => `<ul>${items.map(it => `<li><span class="id">${it.id}</span><div><p>${it.text}</p>${open && it.options ? `<div class="chips" role="group" aria-label="${it.id} options">${it.options.map((o, i) =>
-      `<button class="chip" id="chip-${it.id}-${i}" data-q="${it.id}" data-o="${o}" aria-pressed="${picks[it.id] === o}">${o}</button>`).join("")}</div>` : ""}</div></li>`).join("")}</ul>`;
-
-  return `<section class="dir" id="${d}">
-    <div class="dir-head"><span class="letter">${d}</span><h2>${n.name}<span class="ar">${n.ar}</span></h2><span class="score">Brief score ${n.score}/30</span><p class="idea">${n.idea}</p></div>
+  document.getElementById("logo-board").innerHTML = `
     <div class="stages">
-      <div class="stage light"><span class="tag">${k.lockup}.svg</span>${img(k.lockup)}</div>
-      <div class="stage dark"><span class="tag">${k.lockupDark}.svg</span>${img(k.lockupDark)}</div>
+      <div class="stage light"><span class="tag">lockup.svg</span>${k("lockup", "Lockup on white")}</div>
+      <div class="stage dark"><span class="tag">lockup_dark.svg</span>${k("lockup_dark", "Lockup on navy")}</div>
+      <div class="stage light"><span class="tag">logotype.svg</span>${k("logotype", "Logotype on white")}</div>
+      <div class="stage dark"><span class="tag">logotype_dark.svg</span>${k("logotype_dark", "Logotype on navy")}</div>
     </div>
-    <div class="subhead">Small sizes in px · ${k.mark} on white, ${k.icon} as an app icon</div>
-    <div class="ladder"><div class="l">${ladder(k.mark)}</div><div class="d">${ladder(k.icon)}</div></div>
-    <div class="subhead">In context</div>
-    <div class="ctx">${site}${card}${phone}${chat}${stamp}</div>
-    <div class="notes">
-      <div class="panel"><h3><span class="dot" style="background:var(--teal)"></span>Fixed in round 1</h3>${list(n.fixed, false)}</div>
-      <div class="panel"><h3><span class="dot" style="background:var(--amber)"></span>Your call</h3>${list(n.open, true)}</div>
+    <div class="subhead">Small sizes in px · the mark on white, the tile as an app icon</div>
+    <div class="ladder"><div class="l">${ladder("mark")}</div><div class="d">${ladder("tile")}</div></div>
+    <div class="subhead">In use</div>
+    <div class="ctx">
+      <div class="site">
+        <div class="chrome"><span class="dots"><i></i><i></i><i></i></span><div class="tab">${k("tile", "favicon", 'width="16" height="16"')}<span>وقّاد · نظام الجمعيات</span></div></div>
+        <header>${k("lockup", "Lockup in the header")}<nav><span>الرئيسية</span><span>معكم</span><span>الحلول</span><span>عن وقّاد</span></nav><span class="cta">اطلب عرضاً</span></header>
+        <div class="hero"><b>نظام الجمعيات المبني للحوكمة</b><span>أنظمة تصمد أمام التدقيق</span></div>
+      </div>
+      <div class="card-mock">${k("lockup_dark", "Lockup on a business card")}<div class="who"><b>عبدالعزيز القرني</b>الشريك المدير <span class="en">· Managing Partner</span><br><span class="url">waqqad.sa</span></div></div>
+      <div class="phone">${apps.map(a => a === "" ? `<div class="app">${k("tile", "App icon")}<span>وقّاد</span></div>` : `<div class="app"><i></i><span>${a}</span></div>`).join("")}</div>
+      <div class="chat">
+        <div class="row1"><div class="av">${k("tile", "Avatar")}</div><div><div class="t">وقّاد</div><div class="s">حساب أعمال · متصل</div></div></div>
+        <div class="row1"><div class="av" style="width:28px;height:28px">${k("tile", "Avatar")}</div><div class="s">تم إرسال العرض الفني والمالي</div></div>
+      </div>
+      <div class="stamp">
+        <div class="doc"><b>عقد تقديم خدمات تقنية</b><br>يلتزم الطرف الثاني (وقّاد) بتسليم المرحلة الأولى خلال ستين يوماً من تاريخ توقيع هذا العقد، وفق نطاق العمل الموضح في الملحق (أ).</div>
+        <div class="seal">${k("lockup_mono", "One-colour lockup as a stamp")}<span>معتمد</span></div>
+      </div>
+    </div>`;
+  document.querySelectorAll("[data-r]").forEach(b => b.setAttribute("aria-pressed", b.dataset.r === round));
+}
+
+/* ---------- motion helpers */
+function playIntro(svg) {
+  if (!svg) return;
+  const looping = svg.classList.contains("wq-loop");
+  svg.classList.remove("wq-intro", "wq-loop");
+  void svg.getBoundingClientRect();
+  svg.classList.add("wq-intro");
+  clearTimeout(svg._t);
+  svg._t = setTimeout(() => { svg.classList.remove("wq-intro"); if (looping || svg.dataset.loop === "1") svg.classList.add("wq-loop"); }, 2300);
+}
+function setLoop(svg, on) {
+  svg.dataset.loop = on ? "1" : "";
+  svg.classList.toggle("wq-loop", on);
+  if (on) svg.classList.remove("wq-intro");
+}
+
+/* ---------- 2 · spark board */
+const pickChips = (id) => `<div class="chips" role="group" aria-label="${id}">${["Favourite", "Maybe", "No"].map((o, i) =>
+  `<button class="chip" id="chip-${id}-${i}" data-q="${id}" data-o="${o}" aria-pressed="${picks[id] === o}">${o}</button>`).join("")}</div>`;
+
+function sparkBoard() {
+  document.getElementById("sparks").innerHTML = SPARK_KEYS.map((key, i) => {
+    const s = DATA.sparks[key];
+    const id = i === 0 ? "SP-0" : `SP-${i}`;
+    const sizes = [16, 24, 32, 48].map(px => `<figure>${img(s.light, s.name, `width="${px}" height="${px}" style="width:${px}px;height:${px}px"`)}<figcaption>${px}</figcaption></figure>`).join("")
+      + `<figure>${img(s.tile, s.name + " app icon", 'width="40" height="40" style="width:40px;height:40px"')}<figcaption>icon</figcaption></figure>`;
+    return `<article class="sp" data-spark="${key}">
+      <div class="sp-stage ${sparkBg}" data-stage="${key}" title="Hover to see the hover effect">${i === 0 ? `<span class="badge">${s.tag}</span>` : ""}${s.live[sparkBg]}<span class="hint">hover me</span></div>
+      <div class="sp-body">
+        <h3><span class="id">${id}</span>${s.name}<span class="ar">${s.ar}</span></h3>
+        <p>${s.idea}</p>
+        <p class="motion">${s.motion}</p>
+        <div class="sp-actions"><button class="btn" data-play="${key}">Play entrance</button><button class="btn" data-loop="${key}" aria-pressed="false">Loop</button></div>
+        <div class="mini">${sizes}<span class="note">${s.small}</span></div>
+        ${pickChips(id)}
+      </div>
+    </article>`;
+  }).join("");
+  observeSparks();
+}
+
+let io;
+function observeSparks() {
+  if (io) io.disconnect();
+  if (!("IntersectionObserver" in window)) return;
+  io = new IntersectionObserver(entries => entries.forEach(e => {
+    if (e.isIntersecting) { playIntro(e.target.querySelector("svg.wq")); io.unobserve(e.target); }
+  }), { threshold: .5 });
+  document.querySelectorAll(".sp-stage").forEach(el => io.observe(el));
+}
+
+/* ---------- try it */
+function tryBoard() {
+  const s = DATA.sparks[trySpark];
+  const word = DATA.rounds.v2;
+  const liveLight = s.live.light.replace('class="wq ', 'class="wq try-logo ');
+  const liveDark = s.live.dark.replace('class="wq ', 'class="wq try-sting ');
+  const liveLoop = s.live.light.replace('class="wq ', 'class="wq wq-loop ');
+  document.getElementById("try").innerHTML = `
+    <div class="pickrow"><b>Spark:</b>${SPARK_KEYS.map(k => `<button class="chip" id="try-${k}" data-try="${k}" aria-pressed="${k === trySpark}">${DATA.sparks[k].name}</button>`).join("")}</div>
+    <div class="site">
+      <div class="chrome"><span class="dots"><i></i><i></i><i></i></span><div class="tab">${img(s.tile, "favicon", 'width="16" height="16"')}<span>وقّاد · نظام الجمعيات</span></div></div>
+      <header><a class="logo-live" href="#spark" aria-label="وقّاد">${liveLight}${img(DATA.wordmarkInk.light, "وقّاد")}</a>
+        <nav><span>الرئيسية</span><span>معكم</span><span>الحلول</span><span>عن وقّاد</span></nav>
+        <button class="cta" type="button">اطلب عرضاً<span class="spk" aria-hidden="true"></span></button></header>
+      <div class="hero"><b>مرّر المؤشر على الشعار وعلى زر «اطلب عرضاً»</b><span>Hover over the logo and the button: this is how the spark would answer on the website.</span></div>
     </div>
-  </section>`;
+    <div class="sting" id="sting">
+      <div class="frame">${liveDark}${img(DATA.wordmarkInk.dark, "وقّاد")}</div>
+      <div class="line">أنظمة تصمد أمام التدقيق</div>
+      <button class="btn primary play-btn" id="play-sting">▶ Play video intro</button>
+    </div>
+    <div class="loader">${liveLoop}<span>جاري التحميل…</span><span style="font-family:var(--font-en);font-size:12px">The loop as a loading indicator</span></div>`;
 }
 
-function render() {
-  document.getElementById("dirs").innerHTML = ["A", "B", "C", "S"].map(d => d === "S" ? systemHTML() : dirHTML(d)).join("");
-  document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === version));
-  replyText();
+/* ---------- 3 · type board */
+function typeBoard() {
+  document.getElementById("types").innerHTML = TYPE_KEYS.map((key, i) => {
+    const t = DATA.type[key];
+    const id = i === 0 ? "TY-0" : `TY-${i}`;
+    return `<article class="ty">
+      <div class="ty-stages"><div class="l">${img(t.light, t.name + " lockup")}</div><div class="d">${img(t.dark, t.name + " on navy")}</div></div>
+      <div class="ty-body">
+        <h3><span class="id" style="font:600 12px var(--font-mono);color:var(--teal)">${id}</span>${t.name}<span class="ar">${t.ar}</span>${t.tag ? `<span class="face">· ${t.tag}</span>` : ""}</h3>
+        <span class="face">${t.face}</span>
+        <p>${t.idea}</p>
+        ${t.risk ? `<p class="risk">Watch out: ${t.risk}</p>` : ""}
+        <div class="ty-small">${img(t.wordmark, t.name, 'style="height:18px"')}${img(t.wordmark, t.name, 'style="height:28px"')}${img(t.light, t.name, 'style="height:36px"')}</div>
+        ${i === 0 ? "" : pickChips(id)}
+      </div>
+    </article>`;
+  }).join("");
 }
 
-function systemHTML() {
-  const n = NOTES.S;
-  return `<section class="dir" id="S"><div class="dir-head"><span class="letter">S</span><h2>Shared system</h2><p class="idea">${n.idea}</p></div>
-    <div class="notes"><div class="panel"><h3><span class="dot" style="background:var(--teal)"></span>Fixed in round 1</h3><ul>${n.fixed.map(it => `<li><span class="id">${it.id}</span><div><p>${it.text}</p></div></li>`).join("")}</ul></div>
-    <div class="panel"><h3><span class="dot" style="background:var(--amber)"></span>Your call</h3><ul>${n.open.map(it => `<li><span class="id">${it.id}</span><div><p>${it.text}</p><div class="chips">${it.options.map((o, i) =>
-      `<button class="chip" id="chip-${it.id}-${i}" data-q="${it.id}" data-o="${o}" aria-pressed="${picks[it.id] === o}">${o}</button>`).join("")}</div></div></li>`).join("")}</ul></div></div></section>`;
-}
-
+/* ---------- reply */
 function replyText() {
-  const order = ["A", "B", "C", "S"].flatMap(d => NOTES[d].open.map(o => o.id));
-  const lines = order.filter(id => picks[id]).map(id => `${id}: ${picks[id]}`);
-  document.getElementById("reply-text").textContent = lines.length ? lines.join("\n") : "(no options picked yet)";
+  const lines = [];
+  SPARK_KEYS.forEach((k, i) => { const id = i === 0 ? "SP-0" : `SP-${i}`; if (picks[id]) lines.push(`${id} ${DATA.sparks[k].name}: ${picks[id]}`); });
+  TYPE_KEYS.forEach((k, i) => { const id = i === 0 ? "TY-0" : `TY-${i}`; if (picks[id]) lines.push(`${id} ${DATA.type[k].name}: ${picks[id]}`); });
+  document.getElementById("reply-text").textContent = lines.length ? lines.join("\n") : "(nothing marked yet)";
 }
 function fullReply() {
   const note = document.getElementById("reply-note").value.trim();
-  const picksText = document.getElementById("reply-text").textContent;
-  return (note ? note + "\n\n" : "") + "Logo Lab round 1 picks:\n" + picksText;
+  return (note ? note + "\n\n" : "") + "Logo Lab round 2 picks:\n" + document.getElementById("reply-text").textContent;
 }
 
+/* ---------- hover: the whole stage or logo link counts, not just the svg */
+document.addEventListener("mouseover", e => {
+  const host = e.target.closest(".sp-stage, .logo-live");
+  if (host && !host.contains(e.relatedTarget)) host.querySelector("svg.wq")?.classList.add("wq-hover");
+});
+document.addEventListener("mouseout", e => {
+  const host = e.target.closest(".sp-stage, .logo-live");
+  if (host && !host.contains(e.relatedTarget)) host.querySelector("svg.wq")?.classList.remove("wq-hover");
+});
+
+/* ---------- events */
 document.addEventListener("click", e => {
-  const seg = e.target.closest(".seg button");
-  if (seg) { version = seg.dataset.v; try { localStorage.setItem("lab-version", version); } catch (x) {} render(); return; }
-  const chip = e.target.closest(".chip");
-  if (chip) {
-    const q = chip.dataset.q, o = chip.dataset.o;
-    picks[q] = picks[q] === o ? undefined : o;
-    if (!picks[q]) delete picks[q];
-    try { localStorage.setItem("lab-picks", JSON.stringify(picks)); } catch (x) {}
-    document.querySelectorAll(`.chip[data-q="${q}"]`).forEach(c => c.setAttribute("aria-pressed", picks[q] === c.dataset.o));
-    replyText();
+  const t = e.target.closest("button, .sp-stage");
+  if (!t) return;
+  if (t.dataset.r) { round = t.dataset.r; store.set("lab2-round", round); logoBoard(); return; }
+  if (t.dataset.bg) {
+    sparkBg = t.dataset.bg; store.set("lab2-bg", sparkBg);
+    document.querySelectorAll("[data-bg]").forEach(b => b.setAttribute("aria-pressed", b.dataset.bg === sparkBg));
+    sparkBoard(); return;
+  }
+  if (t.dataset.play) { playIntro(document.querySelector(`[data-stage="${t.dataset.play}"] svg`)); return; }
+  if (t.dataset.loop) {
+    const on = t.getAttribute("aria-pressed") !== "true";
+    t.setAttribute("aria-pressed", on); t.textContent = on ? "Stop loop" : "Loop";
+    setLoop(document.querySelector(`[data-stage="${t.dataset.loop}"] svg`), on); return;
+  }
+  if (t.classList.contains("sp-stage")) { playIntro(t.querySelector("svg")); return; }
+  if (t.id === "play-all") { document.querySelectorAll(".sp-stage svg").forEach((s, i) => setTimeout(() => playIntro(s), i * 120)); return; }
+  if (t.id === "loop-all") {
+    const on = t.getAttribute("aria-pressed") !== "true";
+    t.setAttribute("aria-pressed", on); t.textContent = on ? "Stop all loops" : "Loop all";
+    document.querySelectorAll(".sp-stage svg").forEach(s => setLoop(s, on));
+    document.querySelectorAll("[data-loop]").forEach(b => { b.setAttribute("aria-pressed", on); b.textContent = on ? "Stop loop" : "Loop"; });
     return;
   }
-  if (e.target.id === "copy") {
-    const btn = e.target;
-    const done = () => { btn.textContent = "Copied"; setTimeout(() => btn.textContent = "Copy reply", 1600); };
-    const fallback = () => { const ta = document.getElementById("reply-note"); ta.value = fullReply(); ta.select(); btn.textContent = "Selected, press Ctrl+C"; };
+  if (t.dataset.try) { trySpark = t.dataset.try; store.set("lab2-try", trySpark); tryBoard(); return; }
+  if (t.id === "play-sting") {
+    const st = document.getElementById("sting");
+    st.classList.remove("play"); void st.offsetWidth; st.classList.add("play");
+    playIntro(st.querySelector("svg.wq")); return;
+  }
+  if (t.dataset.q) {
+    const q = t.dataset.q, o = t.dataset.o;
+    if (picks[q] === o) delete picks[q]; else picks[q] = o;
+    store.set("lab2-picks", picks);
+    document.querySelectorAll(`.chip[data-q="${q}"]`).forEach(c => c.setAttribute("aria-pressed", picks[q] === c.dataset.o));
+    replyText(); return;
+  }
+  if (t.id === "copy") {
+    const done = () => { t.textContent = "Copied"; setTimeout(() => t.textContent = "Copy reply", 1600); };
+    const fallback = () => { const ta = document.getElementById("reply-note"); ta.value = fullReply(); ta.select(); t.textContent = "Selected, press Ctrl+C"; };
     try { navigator.clipboard.writeText(fullReply()).then(done, fallback); } catch (x) { fallback(); }
   }
 });
 
 const noteEl = document.getElementById("reply-note");
-try { noteEl.value = localStorage.getItem("lab-note") || ""; } catch (e) {}
-noteEl.addEventListener("input", () => { try { localStorage.setItem("lab-note", noteEl.value); } catch (e) {} });
-palette();
-render();
+noteEl.value = store.get("lab2-note", "");
+noteEl.addEventListener("input", () => store.set("lab2-note", noteEl.value));
+document.querySelectorAll("[data-bg]").forEach(b => b.setAttribute("aria-pressed", b.dataset.bg === sparkBg));
+logoBoard();
+sparkBoard();
+tryBoard();
+typeBoard();
+replyText();
 </script>

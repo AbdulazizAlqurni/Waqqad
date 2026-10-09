@@ -1,12 +1,18 @@
 """Build the Waqqad logo set from one source of truth.
 
-    python3 build.py            -> writes v1/*.svg and ../logo-lab.html
+    python3 build.py        -> writes v2/ (logo, spark variants, typography
+                               variants, motion files) and ../logo-lab.html
 
 Every geometry decision lives in CFG below, so a design round is an edit to
-CFG plus a rebuild. The outlined glyphs (Kufi wordmark, Plex wordmark, Plex
-Latin) are lifted from the received drafts and never redrawn by hand.
+CFG plus a rebuild. Letter outlines come from the received drafts (current
+Kufi wordmark, Plex Latin) and from type_outlines.json (made by typeset.py
+from open fonts); nothing is redrawn by hand except the grid Kufi, which is
+built from cells on purpose.
+
+History: v1/ is round 1 as approved and stays frozen; received/ is the drafts.
 """
 import json
+import math
 import os
 import re
 import sys
@@ -16,7 +22,8 @@ sys.path.insert(0, HERE)
 import pathkit as pk  # noqa: E402
 
 RECEIVED = os.path.join(HERE, "received")
-OUT = os.path.join(HERE, "v1")
+OUT = os.path.join(HERE, "v2")
+R2 = math.sqrt(2)
 
 COLOR = {
     "navy": "#0B1F3A",
@@ -24,31 +31,107 @@ COLOR = {
     "amber": "#F2A93B",
     "mist": "#F3F5F8",
     "white": "#FFFFFF",
-    "teal_light": "#7FD1DE",  # used by the drafts on navy; not yet in the palette
 }
 
-# ink: letters and grid; spark: the amber piece; accent: rule and Latin on A/C
+# ink: letters and grid; spark: the amber piece; accent: rule and Latin.
+# Round 1 pick S-3: white, not light teal, for Latin and rule on navy.
 THEMES = {
     "light": dict(bg=None, ink=COLOR["navy"], spark=COLOR["amber"], accent=COLOR["teal"]),
-    "dark": dict(bg=COLOR["navy"], ink=COLOR["white"], spark=COLOR["amber"], accent=COLOR["teal_light"]),
+    "dark": dict(bg=COLOR["navy"], ink=COLOR["white"], spark=COLOR["amber"], accent=COLOR["white"]),
     "mono": dict(bg=None, ink=COLOR["navy"], spark=COLOR["navy"], accent=COLOR["navy"]),
 }
 
 CFG = {
-    # A · Sharara: 2x2 grid rotated 45 deg, top tile lifted and amber
-    "A": dict(tile=24, gap=5, lift=7, rx=2.2,
-              lockup_mark_h=1.0,     # mark height / wordmark height (alef top to baseline)
-              lockup_gap=0.55,       # space between wordmark and mark, in wordmark heights
-              latin_cap=20,          # WAQQAD cap height in wordmark units
-              spark=22),
-    # B · Logotype
-    "B": dict(rule=4, rule_gap_tail=12, latin_cap=20.9, spark=30),
-    # C · Waw monogram
-    "C": dict(ring_r=23, stroke=14, spark=14,
-              lockup_mark_h=1.25, lockup_gap=0.6, latin_cap=16.8),
-    # clear space around every file = this fraction of the logo height
-    "margin": 0.14,
+    # The mark: 2x2 grid rotated 45 deg, top tile lifted and amber.
+    # Round 1 picks: A-6 lift 10 (was 7), A-7 corners stay 2.2.
+    "mark": dict(tile=24, gap=5, lift=10, rx=2.2),
+    "lockup": dict(mark_h=1.0,          # mark height / wordmark height (alef top to baseline)
+                   gap=0.55,            # wordmark to mark, in wordmark heights
+                   latin_cap=20,        # WAQQAD cap height, wordmark units (alef = 91.2)
+                   latin_gap=9,         # minimum space from the Arabic baseline to WAQQAD
+                   shadda="ink"),       # A-5: the spark lives in the mark only
+    "wordmark": dict(spark=22, spark_gap=6),
+    # The logotype (old B), now in the lighter Kufi cut (B-6), sizes relative to alef 91.2
+    "logotype": dict(rule=3, rule_depth=19.5, rule_gap_tail=9, latin_cap=15.7, latin_gap=7.5),
+    "margin": 0.14,  # clear space around every file, fraction of logo height
 }
+
+ALEF_H = 91.2  # every wordmark is scaled so its alef is this tall
+
+
+# ---------------------------------------------------------------- primitives
+
+class Art:
+    """A list of SVG elements in one coordinate space, plus its ink bbox."""
+
+    def __init__(self):
+        self.els, self.box = [], None
+
+    def add(self, el, box):
+        self.els.append(el)
+        self.grow(box)
+        return self
+
+    def grow(self, box):
+        if self.box is None:
+            self.box = tuple(box)
+        else:
+            x0, y0, x1, y1 = self.box
+            self.box = (min(x0, box[0]), min(y0, box[1]), max(x1, box[2]), max(y1, box[3]))
+
+    def placed(self, s, tx, ty):
+        x0, y0, x1, y1 = self.box
+        g = f'<g transform="translate({n(tx)} {n(ty)}) scale({n(s, 4)})">'
+        return g + "".join(self.els) + "</g>", (x0 * s + tx, y0 * s + ty, x1 * s + tx, y1 * s + ty)
+
+
+def n(v, p=2):
+    s = f"{v:.{p}f}".rstrip("0").rstrip(".")
+    return "0" if s in ("-0", "") else s
+
+
+def diamond(cx, cy, size, rx, fill, cls=None, attrs=""):
+    """Square of side `size` turned 45 deg around (cx, cy). With `cls`, the
+    square sits in its own <g class> so CSS can move it without fighting the
+    rotate attribute."""
+    h = size / 2
+    r = size / R2 - rx * (R2 - 1)  # rounded corners pull the tips in
+    rect = (f'<rect x="{n(-h)}" y="{n(-h)}" width="{n(size)}" height="{n(size)}" rx="{n(rx)}" '
+            f'fill="{fill}" transform="rotate(45)"{attrs}/>')
+    inner = f'<g class="{cls}">{rect}</g>' if cls else rect
+    return f'<g transform="translate({n(cx)} {n(cy)})">{inner}</g>', (cx - r, cy - r, cx + r, cy + r)
+
+
+def diamond_outline(cx, cy, size, rx, stroke, width, cls=None):
+    h = size / 2
+    r = size / R2 + width / 2
+    rect = (f'<rect x="{n(-h)}" y="{n(-h)}" width="{n(size)}" height="{n(size)}" rx="{n(rx)}" fill="none" '
+            f'stroke="{stroke}" stroke-width="{n(width)}" pathLength="100" transform="rotate(45)"/>')
+    inner = f'<g class="{cls}">{rect}</g>' if cls else rect
+    return f'<g transform="translate({n(cx)} {n(cy)})">{inner}</g>', (cx - r, cy - r, cx + r, cy + r)
+
+
+def path_el(subs, fill):
+    return f'<path fill="{fill}" d="{pk.to_d(subs)}"/>', pk.bbox(subs)
+
+
+def svg_doc(art, theme, margin_ratio=None, square=False, bg_rx=None, root_attrs="", style=""):
+    x0, y0, x1, y1 = art.box
+    m = (CFG["margin"] if margin_ratio is None else margin_ratio) * (y1 - y0)
+    x0, y0, x1, y1 = x0 - m, y0 - m, x1 + m, y1 + m
+    if square:
+        w, h = x1 - x0, y1 - y0
+        side = max(w, h)
+        x0 -= (side - w) / 2
+        y0 -= (side - h) / 2
+        x1, y1 = x0 + side, y0 + side
+    w, h = x1 - x0, y1 - y0
+    bg = ""
+    if theme.get("bg"):
+        rx = f' rx="{n(bg_rx)}"' if bg_rx else ""
+        bg = f'<rect x="{n(x0)}" y="{n(y0)}" width="{n(w)}" height="{n(h)}"{rx} fill="{theme["bg"]}"/>'
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{n(x0)} {n(y0)} {n(w)} {n(h)}" '
+            f'width="{n(w)}" height="{n(h)}"{root_attrs}>' + style + bg + "".join(art.els) + "</svg>")
 
 
 # ---------------------------------------------------------------- sources
@@ -62,82 +145,18 @@ def _paths(svg):
     return re.findall(r'<path transform="translate\(([\d.]+) ([\d.]+)\)" fill="[^"]+" d="([^"]+)"', svg)
 
 
-def load_sources():
-    a, b, c = _paths(_read("A_lockup.svg")), _paths(_read("B_logotype.svg")), _paths(_read("C_lockup.svg"))
-    latin = pk.parse(a[1][2])
-    return {
-        "kufi_A": pk.parse(a[0][2]),           # baseline at y=0, alef top -91.2
-        "kufi_B": pk.parse(b[0][2]),           # heavier cut, alef top -121.6
-        "plex_C": pk.parse(c[0][2]),           # Plex Sans Arabic with shadda
-        "latin": pk.split_glyphs(latin, {2, 4, 6, 8, 10}),  # W A Q Q A D, cap 18.148
-    }
-
-
 LATIN_CAP = 18.148
 
 
-# ---------------------------------------------------------------- primitives
-
-class Art:
-    """A list of SVG elements in one coordinate space, plus its ink bbox."""
-
-    def __init__(self, els=None, box=None):
-        self.els = els or []
-        self.box = box
-
-    def add(self, el, box):
-        self.els.append(el)
-        if self.box is None:
-            self.box = box
-        else:
-            x0, y0, x1, y1 = self.box
-            self.box = (min(x0, box[0]), min(y0, box[1]), max(x1, box[2]), max(y1, box[3]))
-        return self
-
-    def placed(self, s, tx, ty):
-        """This art scaled by s then moved by (tx, ty), as one <g>."""
-        x0, y0, x1, y1 = self.box
-        g = f'<g transform="translate({_n(tx)} {_n(ty)}) scale({_n(s, 4)})">'
-        return g + "".join(self.els) + "</g>", (x0 * s + tx, y0 * s + ty, x1 * s + tx, y1 * s + ty)
-
-
-def _n(v, p=2):
-    s = f"{v:.{p}f}".rstrip("0").rstrip(".")
-    return "0" if s in ("-0", "") else s
-
-
-def diamond(cx, cy, size, rx, fill):
-    """Square of side `size` rotated 45 deg around its centre."""
-    h = size / 2
-    el = (f'<rect x="{_n(cx - h)}" y="{_n(cy - h)}" width="{_n(size)}" height="{_n(size)}" '
-          f'rx="{_n(rx)}" fill="{fill}" transform="rotate(45 {_n(cx)} {_n(cy)})"/>')
-    # rounded corners pull the tips in by rx*(sqrt2-1)
-    r = size / 2 ** 0.5 - rx * (2 ** 0.5 - 1)
-    return el, (cx - r, cy - r, cx + r, cy + r)
-
-
-def path_el(subs, fill):
-    return f'<path fill="{fill}" d="{pk.to_d(subs)}"/>', pk.bbox(subs)
-
-
-def svg_doc(art, theme, margin_ratio=None, square=False, bg_rx=None):
-    x0, y0, x1, y1 = art.box
-    h = y1 - y0
-    m = (CFG["margin"] if margin_ratio is None else margin_ratio) * h
-    x0, y0, x1, y1 = x0 - m, y0 - m, x1 + m, y1 + m
-    if square:
-        w, hh = x1 - x0, y1 - y0
-        side = max(w, hh)
-        x0 -= (side - w) / 2
-        y0 -= (side - hh) / 2
-        x1, y1 = x0 + side, y0 + side
-    w, hh = x1 - x0, y1 - y0
-    bg = ""
-    if theme["bg"]:
-        rx = f' rx="{_n(bg_rx)}"' if bg_rx else ""
-        bg = f'<rect x="{_n(x0)}" y="{_n(y0)}" width="{_n(w)}" height="{_n(hh)}"{rx} fill="{theme["bg"]}"/>'
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{_n(x0)} {_n(y0)} {_n(w)} {_n(hh)}" '
-            f'width="{_n(w)}" height="{_n(hh)}">' + bg + "".join(art.els) + "</svg>")
+def load_sources():
+    a = _paths(_read("A_lockup.svg"))
+    with open(os.path.join(HERE, "type_outlines.json"), encoding="utf-8") as f:
+        outlines = json.load(f)
+    return {
+        "kufi": pk.parse(a[0][2]),  # the drafts' Kufi: baseline y=0, alef top -91.2
+        "latin": pk.split_glyphs(pk.parse(a[1][2]), {2, 4, 6, 8, 10}),  # W A Q Q A D, cap 18.148
+        "outlines": outlines,
+    }
 
 
 def latin_line(glyphs, cap, x_left, x_right, baseline, fill):
@@ -146,300 +165,409 @@ def latin_line(glyphs, cap, x_left, x_right, baseline, fill):
     scaled = [pk.transform(g, s) for g in glyphs]
     widths = [pk.bbox(g)[2] - pk.bbox(g)[0] for g in scaled]
     gap = (x_right - x_left - sum(widths)) / (len(glyphs) - 1)
-    art, cursor = Art(), x_left
-    subs = []
+    cursor, subs = x_left, []
     for g, w in zip(scaled, widths):
-        gx0 = pk.bbox(g)[0]
-        subs += pk.transform(g, 1, 1, cursor - gx0, baseline)
+        subs += pk.transform(g, 1, 1, cursor - pk.bbox(g)[0], baseline)
         cursor += w + gap
-    el, box = path_el(subs, fill)
-    return el, box, gap / cap
+    return path_el(subs, fill)
 
 
 def latin_natural(glyphs, cap, tracking_em):
-    """Natural width of WAQQAD at `cap` with extra tracking in cap units."""
     s = cap / LATIN_CAP
-    ws = [pk.bbox(g)[2] - pk.bbox(g)[0] for g in (pk.transform(g, s) for g in glyphs)]
-    natural_gaps = []
-    for i in range(len(glyphs) - 1):
-        a, b = pk.bbox(pk.transform(glyphs[i], s)), pk.bbox(pk.transform(glyphs[i + 1], s))
-        natural_gaps.append(b[0] - a[2])
-    return sum(ws) + sum(natural_gaps) + tracking_em * cap * (len(glyphs) - 1)
+    boxes = [pk.bbox(pk.transform(g, s)) for g in glyphs]
+    ink = sum(b[2] - b[0] for b in boxes)
+    gaps = sum(boxes[i + 1][0] - boxes[i][2] for i in range(len(boxes) - 1))
+    return ink + gaps + tracking_em * cap * (len(glyphs) - 1)
 
 
-# ---------------------------------------------------------------- A · Sharara
+# ---------------------------------------------------------------- words
+#
+# A Word is the Arabic name ready to compose: letter outlines plus the few
+# landmarks the lockups need. Coordinates: baseline y=0, alef top y=-91.2.
 
-def mark_A(t, cfg=None):
-    c = cfg or CFG["A"]
-    tile, gap, lift, rx = c["tile"], c["gap"], c["lift"], c["rx"]
-    step = tile + gap
-    o = 50 - step / 2  # grid centred on (50, 50) before rotation
-    cells = [(o, o, "spark"), (o + step, o, "ink"), (o, o + step, "ink"), (o + step, o + step, "ink")]
-    art = Art()
-    for cx, cy, role in cells:
-        if role == "spark":
-            cx, cy = cx - lift, cy - lift  # lifted along the grid's diagonal
-        # rotate centre 45 deg about (50, 50) so every tile stays axis-free
-        dx, dy = cx - 50, cy - 50
-        rx_, ry_ = 50 + (dx - dy) * 0.70710678, 50 + (dx + dy) * 0.70710678
-        el, box = diamond(rx_, ry_, tile, rx, t[role])
-        art.add(el, box)
-    return art
+class Word:
+    def __init__(self, letters, dots, qaf_right, alef_top, extra=None):
+        self.letters = letters      # list of (svg-element-maker(fill), bbox)
+        self.dots = dots            # bbox of the qaf's two dots (the spark goes above)
+        self.qaf_right = qaf_right  # x of the qaf's right edge (Latin ends here)
+        self.alef_top = alef_top
+        self.extra = extra or {}
+        boxes = [b for _, b in letters]
+        self.box = (min(b[0] for b in boxes), min(b[1] for b in boxes),
+                    max(b[2] for b in boxes), max(b[3] for b in boxes))
+
+    def art(self, fill):
+        a = Art()
+        for make, box in self.letters:
+            a.add(make(fill), box)
+        return a
 
 
-def lockup_A(src, t):
-    c = CFG["A"]
-    word = src["kufi_A"]
-    art = Art()
-    el, wbox = path_el(word, t["ink"])
-    art.add(el, wbox)
-    # spark replaces the shadda, centred over the two qaf dots
-    dots = pk.bbox(word[2:4])
-    dcx = (dots[0] + dots[2]) / 2
-    sp = c["spark"]
-    half = sp / 2 ** 0.5
-    el, box = diamond(dcx, dots[1] - 6 - half, sp, sp * 0.12, t["spark"])
+def word_from_drafts(src):
+    subs = src["kufi"]
+    return Word(
+        letters=[(lambda f, s=subs: path_el(s, f)[0], pk.bbox(subs))],
+        dots=pk.bbox(subs[2:4]), qaf_right=pk.bbox(subs[4:5])[2], alef_top=-91.2)
+
+
+def word_from_font(rec):
+    """Word from typeset.py outlines: cluster 0 و, 1 ق (+dots), 2 ا, 3 د."""
+    glyphs = rec["glyphs"]
+    alef = [s for g in glyphs if g["cluster"] == 2 for s in pk.parse(g["d"])]
+    s = ALEF_H / -pk.bbox(alef)[1]
+    subs_all, qaf = [], []
+    for g in glyphs:
+        subs = pk.transform(pk.parse(g["d"]), s)
+        subs_all += subs
+        if g["cluster"] == 1:
+            qaf += subs
+    # dots: the qaf's subpaths that sit wholly above its body (the biggest shape)
+    body = max(qaf, key=lambda sp: (lambda b: (b[2] - b[0]) * (b[3] - b[1]))(pk.bbox([sp])))
+    by0 = pk.bbox([body])[1]
+    dots = [sp for sp in qaf if pk.bbox([sp])[3] <= by0 + 1]
+    return Word(
+        letters=[(lambda f, ss=subs_all: path_el(ss, f)[0], pk.bbox(subs_all))],
+        dots=pk.bbox(dots), qaf_right=pk.bbox([body])[2], alef_top=-ALEF_H,
+        extra=dict(font=rec["font"]))
+
+
+def word_grid_kufi(diamond_dots=True):
+    """Square Kufi وقاد built on cells, stroke = space = one cell.
+
+    Read right to left: و (square head, tail down and left), ق (square head
+    joined to the alef along the baseline), ا, د. The qaf's dots are diamonds:
+    the same piece as the mark, at letter scale."""
+    c = ALEF_H / 6           # alef is six cells tall
+    cells = [                 # (col, row, w, h); row 5 is the baseline row
+        (2, 2, 1, 4), (0, 5, 3, 1),                              # د
+        (4, 0, 1, 6),                                            # ا
+        (4, 5, 3, 1),                                            # joint ا-ق on the baseline
+        (6, 3, 3, 1), (6, 5, 3, 1), (6, 3, 1, 3), (8, 3, 1, 3),  # ق head
+        (10, 3, 3, 1), (10, 5, 3, 1), (10, 3, 1, 3), (12, 3, 1, 3),  # و head
+        (12, 5, 1, 3), (9, 7, 4, 1),                              # و tail
+    ]
+    y_off = -6 * c            # row 6 top = baseline
+    rects = []
+    for col, row, w, h in cells:
+        rects.append((col * c, row * c + y_off, w * c, h * c))
+
+    def make(fill, rects=rects):
+        d = "".join(f"M{n(x)} {n(y)}H{n(x + w)}V{n(y + h)}H{n(x)}Z" for x, y, w, h in rects)
+        dots = ""
+        for col in (6, 8):
+            dots += diamond((col + .5) * c, 1.5 * c + y_off, c * 0.92, c * 0.1, fill)[0]
+        return f'<path fill="{fill}" d="{d}"/>' + dots
+
+    xs = [r[0] for r in rects] + [r[0] + r[2] for r in rects]
+    ys = [r[1] for r in rects] + [r[1] + r[3] for r in rects]
+    box = (min(xs), min(ys), max(xs), max(ys))
+    dr = c * 0.92 / R2
+    dots = (6.5 * c - dr, 1.5 * c + y_off - dr, 8.5 * c + dr, 1.5 * c + y_off + dr)
+    # Latin stops short of the waw's tail, which runs under column 9
+    return Word(letters=[(make, box)], dots=dots, qaf_right=8.4 * c, alef_top=-ALEF_H,
+                extra=dict(font="Built on the mark's grid"))
+
+
+# ---------------------------------------------------------------- compositions
+
+def shadda_spark(word, fill, size=None):
+    c = CFG["wordmark"]
+    sp = size or c["spark"]
+    dcx = (word.dots[0] + word.dots[2]) / 2
+    return diamond(dcx, word.dots[1] - c["spark_gap"] - sp / R2, sp, sp * 0.12, fill)
+
+
+def wordmark(word, t, shadda="spark"):
+    """The name alone: letters plus the spark as shadda (amber by default; ink
+    when it sits beside the mark, per A-5)."""
+    art = word.art(t["ink"])
+    el, box = shadda_spark(word, t[shadda])
+    return art.add(el, box)
+
+
+def lockup(word, t, mark_fn=None):
+    c = CFG["lockup"]
+    art = word.art(t["ink"])
+    el, box = shadda_spark(word, t[c["shadda"]] if t is not THEMES["mono"] else t["ink"])
     art.add(el, box)
-    # mark: scaled so its height matches alef top to baseline, aligned to that band
-    word_h = -wbox[1]
-    m = mark_A(t)
+    word_h = -word.alef_top
+    m = (mark_fn or mark)(t)
     mh = m.box[3] - m.box[1]
-    s = word_h * c["lockup_mark_h"] / mh
-    gap = word_h * c["lockup_gap"]
-    tx = wbox[2] + gap - m.box[0] * s
-    ty = wbox[1] - m.box[1] * s
+    s = word_h * c["mark_h"] / mh
+    tx = word.box[2] + word_h * c["gap"] - m.box[0] * s
+    ty = word.alef_top - m.box[1] * s
     el, box = m.placed(s, tx, ty)
     art.add(el, box)
-    # WAQQAD tucked under د ا ق, from the dal's left edge to the qaf's right edge,
-    # baseline level with the bottom of the waw's tail
-    qaf = pk.bbox(word[4:5])
-    el, box, _ = latin_line(src["latin"], c["latin_cap"], wbox[0], qaf[2], wbox[3], t["accent"])
-    art.add(el, box)
-    return art
+    # WAQQAD tucked under د ا ق, baseline level with the bottom of the waw's tail,
+    # but never closer than latin_gap to the Arabic baseline (short tails)
+    base = max(word.box[3], c["latin_gap"] + c["latin_cap"])
+    el, box = latin_line(SRC["latin"], c["latin_cap"], word.box[0], word.qaf_right, base, t["accent"])
+    return art.add(el, box)
 
 
-def wordmark_A(src, t):
-    """A's wordmark on its own: Kufi with the spark as shadda."""
-    c = CFG["A"]
-    word = src["kufi_A"]
-    art = Art()
-    el, wbox = path_el(word, t["ink"])
-    art.add(el, wbox)
-    dots = pk.bbox(word[2:4])
-    sp = c["spark"]
-    el, box = diamond((dots[0] + dots[2]) / 2, dots[1] - 6 - sp / 2 ** 0.5, sp, sp * 0.12, t["spark"])
-    art.add(el, box)
-    return art
-
-
-# ---------------------------------------------------------------- B · Logotype
-
-def logotype_B(src, t):
-    c = CFG["B"]
-    word = src["kufi_B"]
-    art = Art()
-    el, wbox = path_el(word, t["ink"])
-    art.add(el, wbox)
-    dots = pk.bbox(word[2:4])
-    sp = c["spark"]
-    el, box = diamond((dots[0] + dots[2]) / 2, dots[1] - 6.5 - sp / 2 ** 0.5, sp, sp * 0.12, t["spark"])
-    art.add(el, box)
-    # rule: same depth as the drafts (26 below baseline), from the dal's left edge
-    # to just short of where the waw's tail lands, so the tail swings past its end
-    tail = pk.bbox(word[6:7])
-    ry, rh = 26, c["rule"]
-    x1 = tail[0] - c["rule_gap_tail"]
-    art.add(f'<rect x="{_n(wbox[0])}" y="{ry}" width="{_n(x1 - wbox[0])}" height="{rh}" '
-            f'rx="{_n(rh / 2)}" fill="{t["accent"]}"/>', (wbox[0], ry, x1, ry + rh))
-    # WAQQAD right-aligned to the rule's end, hanging under it
+def logotype(word, t):
+    """Old direction B: the name, the spark, a rule that stops short of the tail."""
+    c = CFG["logotype"]
+    art = wordmark(word, t)
+    tail_left = word.extra.get("tail_left", word.qaf_right + 18)
+    x0, x1 = word.box[0], tail_left - c["rule_gap_tail"]
+    ry, rh = c["rule_depth"], c["rule"]
+    art.add(f'<rect x="{n(x0)}" y="{n(ry)}" width="{n(x1 - x0)}" height="{n(rh)}" rx="{n(rh / 2)}" '
+            f'fill="{t["accent"]}"/>', (x0, ry, x1, ry + rh))
     cap = c["latin_cap"]
-    w = latin_natural(src["latin"], cap, 0.12)
-    base = ry + rh + 10 + cap
-    el, box, _ = latin_line(src["latin"], cap, x1 - w, x1, base, t["ink"])
-    art.add(el, box)
-    return art
+    w = latin_natural(SRC["latin"], cap, 0.12)
+    base = ry + rh + c["latin_gap"] + cap
+    el, box = latin_line(SRC["latin"], cap, x1 - w, x1, base, t["ink"])
+    return art.add(el, box)
 
 
-def favicon_B(t):
+def favicon_logotype():
     art = Art()
-    art.add('<rect x="0" y="0" width="100" height="100" rx="22" fill="%s"/>' % COLOR["navy"], (0, 0, 100, 100))
-    el, _ = diamond(50, 42, 34, 4.08, t["spark"])
-    art.els.append(el)
-    art.els.append('<rect x="26" y="70" width="48" height="6" rx="3" fill="%s"/>' % COLOR["teal_light"])
+    art.add(f'<rect width="100" height="100" rx="22" fill="{COLOR["navy"]}"/>', (0, 0, 100, 100))
+    art.els.append(diamond(50, 42, 34, 4.08, COLOR["amber"])[0])
+    art.els.append(f'<rect x="26" y="70" width="48" height="6" rx="3" fill="{COLOR["white"]}"/>')
     return art
 
 
-# ---------------------------------------------------------------- C · Waw
-
-def mark_C(t, ink=None):
-    c = CFG["C"]
-    ink = ink or t["ink"]
-    r, sw = c["ring_r"], c["stroke"]
-    art = Art()
-    art.add(f'<circle cx="63" cy="36" r="{r}" fill="none" stroke="{ink}" stroke-width="{sw}"/>',
-            (63 - r - sw / 2, 36 - r - sw / 2, 63 + r + sw / 2, 36 + r + sw / 2))
-    art.add(f'<path d="M63 59C63 76 54 84 36 84" fill="none" stroke="{ink}" stroke-width="{sw}" '
-            f'stroke-linecap="round"/>', (36 - sw / 2, 59, 63 + sw / 2, 84 + sw / 2))
-    el, box = diamond(17, 84, c["spark"], 3, t["spark"])
-    art.add(el, box)
-    return art
-
-
-def lockup_C(src, t):
-    c = CFG["C"]
-    word = src["plex_C"]
-    art = Art()
-    el, wbox = path_el(word, t["ink"])
-    art.add(el, wbox)
-    alef = pk.bbox(word[1:2])
-    word_h = -alef[1]
-    m = mark_C(t)
-    mh = m.box[3] - m.box[1]
-    s = word_h * c["lockup_mark_h"] / mh
-    tx = wbox[2] + word_h * c["lockup_gap"] - m.box[0] * s
-    ty = (alef[1] + wbox[3]) / 2 - (m.box[1] + m.box[3]) / 2 * s
-    el, box = m.placed(s, tx, ty)
-    art.add(el, box)
-    # WAQQAD tucked under د ا ق, baseline level with the bottom of the waw's tail
-    qaf = pk.bbox(word[3:4])
-    tail_bottom = pk.bbox(word[7:8])[3]
-    el, box, _ = latin_line(src["latin"], c["latin_cap"], wbox[0], qaf[2] - 6, tail_bottom, t["accent"])
-    art.add(el, box)
-    return art
-
-
-def tile(mark_art, bg, pad=0.2, rx_ratio=0.22):
-    """App-icon tile: mark optically centred on a rounded square."""
+def tile(mark_art, bg, pad=0.19, rx_ratio=0.22):
+    """App-icon tile: mark centred on a rounded square."""
     x0, y0, x1, y1 = mark_art.box
-    side = 100
-    inner = side * (1 - 2 * pad)
+    inner = 100 * (1 - 2 * pad)
     s = inner / max(x1 - x0, y1 - y0)
-    tx = (side - (x1 - x0) * s) / 2 - x0 * s
-    ty = (side - (y1 - y0) * s) / 2 - y0 * s
+    tx = (100 - (x1 - x0) * s) / 2 - x0 * s
+    ty = (100 - (y1 - y0) * s) / 2 - y0 * s
     art = Art()
-    art.add(f'<rect width="100" height="100" rx="{_n(side * rx_ratio)}" fill="{bg}"/>', (0, 0, 100, 100))
-    el, _ = mark_art.placed(s, tx, ty)
-    art.els.append(el)
+    art.add(f'<rect width="100" height="100" rx="{n(100 * rx_ratio)}" fill="{bg}"/>', (0, 0, 100, 100))
+    art.els.append(mark_art.placed(s, tx, ty)[0])
     return art
+
+
+# ---------------------------------------------------------------- the mark and its spark variants
+#
+# Grid geometry before the spark: tile centres sit at distance d from (50, 50)
+# along the axes (left, right, bottom, top). Class names are the hooks for
+# spark-motion.css; static files simply carry them unused.
+
+def _grid(tile_, gap):
+    d = (tile_ + gap) / 2 * R2
+    return d, {"L": (50 - d, 50), "R": (50 + d, 50), "B": (50, 50 + d), "T": (50, 50 - d)}
+
+
+def star(cx, cy, r, fill, cls):
+    k = r * 0.16
+    d = (f"M0 {n(-r)}Q{n(k)} {n(-k)} {n(r)} 0Q{n(k)} {n(k)} 0 {n(r)}"
+         f"Q{n(-k)} {n(k)} {n(-r)} 0Q{n(-k)} {n(-k)} 0 {n(-r)}Z")
+    return (f'<g transform="translate({n(cx)} {n(cy)})"><g class="{cls}"><path fill="{fill}" d="{d}"/></g></g>',
+            (cx - r, cy - r, cx + r, cy + r))
+
+
+SPARKS = {
+    "lift": dict(
+        name="Lift", ar="الرفعة", tag="Round 1 mark",
+        idea="The top tile leaves the grid and turns amber. The structure is the system; the piece that leaves it is the spark.",
+        motion="Entrance: the grid pops in, the top tile rises out of its place and warms to amber. Hover: it lifts a little higher. Loop: it floats.",
+        small="Holds at 16 px: the gap above the grid stays readable.",
+    ),
+    "glint": dict(
+        name="Glint", ar="البريق",
+        idea="A four-point glint flashes on the spark's corner, the way light catches a cut stone. The diamond stays whole; the glint makes it shine.",
+        motion="Entrance: after the lift, the glint pops and turns a quarter. Hover: it flashes again. Loop: it twinkles every few seconds.",
+        small="Below 24 px the glint disappears and you get the round 1 mark, which is a safe fallback.",
+    ),
+    "burst": dict(
+        name="Burst", ar="التطاير",
+        idea="Three chips fly off the spark, smaller as they go. It is the most literal spark of the five: something struck, something flying.",
+        motion="Entrance: the chips burst out of the spark. Hover: they drift further out. Loop: they burst and fade, again and again, like embers.",
+        small="The chips vanish below 32 px. Use the round 1 mark for icons.",
+    ),
+    "core": dict(
+        name="Core", ar="النواة",
+        idea="All four tiles stay navy and part slightly; the spark is born at the centre where they meet. Nothing leaves the system, and the idea comes from inside it.",
+        motion="Entrance: the tiles start closed, then open as the spark ignites at the centre. Hover: they part further and the spark grows. Loop: it breathes, like a heartbeat.",
+        small="The centre spark is tiny. Below 32 px it reads as four tiles, so icons need a larger spark.",
+    ),
+    "socket": dict(
+        name="Socket", ar="المَقبس",
+        idea="The spark rises out of its place and leaves an open seat behind, a thin V where it used to sit. The empty seat tells you where it came from: talent rising out of a structure.",
+        motion="Entrance: the seat draws itself while the spark lifts out. Hover: the spark rises and the seat glows amber. Loop: the spark drops back in and lifts out, like a key turning.",
+        small="The seat line thins out below 32 px. A 16 px version would drop it.",
+    ),
+    "halo": dict(
+        name="Halo", ar="الوهج",
+        idea="A thin amber ring around the spark: heat around a flame, with no flame drawn. It gives the spark weight without making it bigger.",
+        motion="Entrance: the ring opens out from the spark. Hover: a second ring ripples out and fades. Loop: ripples, like a signal or a pulse.",
+        small="The ring merges with the spark below 24 px into one bigger amber diamond, which still reads.",
+    ),
+}
+
+
+def mark(t, variant="lift", cfg=None):
+    c = dict(CFG["mark"], **(cfg or {}))
+    tile_, gap, lift, rx = c["tile"], c["gap"], c["lift"], c["rx"]
+    if variant == "core":
+        tile_, gap = 22, 14
+    d, pos = _grid(tile_, gap)
+    art = Art()
+    for key in ("L", "R", "B") + (("T",) if variant == "core" else ()):
+        el, box = diamond(*pos[key], tile_, rx, t["ink"], cls=f"wq-t wq-t{key}")
+        art.add(el, box)
+    if variant == "core":
+        el, box = diamond(50, 50, 9, 1, t["spark"], cls="wq-s", attrs=' class="wq-sf"')
+        return art.add(el, box)
+
+    sx, sy = pos["T"][0], pos["T"][1] - lift * R2
+    if variant == "socket":
+        # the empty seat: the lower half of the spark's place in the grid, open at the top
+        hx, hy = pos["T"]
+        r = (tile_ - 3) / R2
+        art.add(f'<g class="wq-k"><path d="M{n(hx - r)} {n(hy)}L{n(hx)} {n(hy + r)}L{n(hx + r)} {n(hy)}" '
+                f'fill="none" stroke="{t["ink"]}" stroke-width="2.6" stroke-linecap="round" '
+                f'stroke-linejoin="round" pathLength="100"/></g>', (hx - r - 1.3, hy - 1.3, hx + r + 1.3, hy + r + 1.3))
+    if variant == "halo":
+        for cls in ("wq-r", "wq-h"):
+            el, box = diamond_outline(sx, sy, tile_ + 11, rx + 1.5, t["spark"], 2, cls=cls)
+            art.add(el, box)
+    el, box = diamond(sx, sy, tile_, rx, t["spark"], cls="wq-s", attrs=' class="wq-sf"')
+    art.add(el, box)
+    if variant == "glint":
+        el, box = star(sx + 12.5, sy - 12.5, 8.5, t["spark"], "wq-g")
+        art.add(el, box)
+    if variant == "burst":
+        for i, (dx, dy, size) in enumerate(((15, -19, 7), (25, -6.5, 5), (5, -29, 3.6)), 1):
+            el, box = diamond(sx + dx, sy + dy, size, size * 0.12, t["spark"],
+                              cls=f"wq-c wq-c{i}", attrs="")
+            el = el.replace('<g class="wq-c', f'<g style="--dx:{n(dx)}px;--dy:{n(dy)}px" class="wq-c', 1)
+            art.add(el, box)
+    return art
+
+
+def mark_live(variant, t, view=(-12, -30, 124, 130)):
+    """Inline SVG for the Lab: fixed viewBox with room to move, CSS hooks on."""
+    art = mark(t, variant)
+    lift = CFG["mark"]["lift"] * R2
+    x, y, w, h = view
+    return (f'<svg class="wq wq-{variant}" viewBox="{x} {y} {w} {h}" '
+            f'style="--wq-ink:{t["ink"]};--wq-spark:{t["spark"]};--wq-lift:{n(lift)}px" aria-hidden="true">'
+            + "".join(art.els) + "</svg>")
+
+
+def motion_file(variant, t, css):
+    """Stand-alone looping SVG for video and web: the mark plus its loop CSS."""
+    art = mark(t, variant)
+    lift = CFG["mark"]["lift"] * R2
+    root = (f' class="wq wq-{variant} wq-loop" style="--wq-ink:{t["ink"]};--wq-spark:{t["spark"]};'
+            f'--wq-lift:{n(lift)}px"')
+    a2 = Art()
+    a2.els, a2.box = art.els, (-12, -30, 112, 100)
+    return svg_doc(a2, t, margin_ratio=0, root_attrs=root, style=f"<style>{css}</style>")
+
+
+# ---------------------------------------------------------------- typography variants
+
+TYPE = {
+    "current": dict(name="Current Kufi", ar="الكوفي الحالي", tag="Round 1",
+                    face="Noto Kufi Arabic, Black (from the drafts)",
+                    idea="Heavy, flat and confident. The reference the other five are measured against."),
+    "grid": dict(name="Grid Kufi", ar="الكوفي المربّع",
+                 face="Custom: drawn on cells, one cell stroke, one cell space",
+                 idea="Square Kufi built on the same grid as the mark, with diamond dots on the qaf. The name and the symbol become one system, and no one else can have it.",
+                 risk="Square Kufi is harder to read at a glance, and at small sizes the counters close up."),
+    "reem": dict(name="Reem Kufi", ar="ريم كوفي", key="reem_kufi_700",
+                 face="Reem Kufi, Bold · SIL OFL",
+                 idea="Fatimid geometric Kufi: a tall alef and a sharp, slanted dal. It reads as heritage made modern, and as the most elegant of the five.",
+                 risk="Lighter strokes than the mark's tiles, so the lockup feels top-heavy unless the mark shrinks."),
+    "changa": dict(name="Changa", ar="تشانجا", key="changa_800",
+                   face="Changa, ExtraBold · SIL OFL",
+                   idea="Condensed, technical Kufi whose dots are already diamonds, and whose و tail ends in a cut. It is the closest to software and the most compact.",
+                   risk="Common in tech and gaming; it needs the spark to feel institutional."),
+    "readex": dict(name="Readex Pro", ar="ريدكس برو", key="readex_700",
+                   face="Readex Pro, Bold · SIL OFL",
+                   idea="A modern sans with diamond dots and open, round letters. It is friendly and easy to read, and its Latin half matches if we ever need it.",
+                   risk="Rounder than the mark; the diamonds have to carry the brand alone."),
+    "plex": dict(name="IBM Plex Sans Arabic", ar="بليكس عربي", key="plex_ar_700",
+                 face="IBM Plex Sans Arabic, Bold · SIL OFL",
+                 idea="The system font itself. The quietest choice: the logo, the interface and the documents all share one typeface.",
+                 risk="Anyone can set it, so the wordmark alone isn't ownable. The mark has to do the work."),
+}
+
+
+def type_word(key):
+    if key == "current":
+        return word_from_drafts(SRC)
+    if key == "grid":
+        return word_grid_kufi()
+    return word_from_font(SRC["outlines"]["arabic"][TYPE[key]["key"]])
 
 
 # ---------------------------------------------------------------- build
 
+SRC = None
+
+
 def build():
-    src = load_sources()
+    global SRC
+    SRC = load_sources()
     files = {}
+    word = word_from_drafts(SRC)
+    word.extra["tail_left"] = 208.9  # the drafts' waw: tail tip at y=+23
     for name, th in THEMES.items():
         sfx = "" if name == "light" else "_" + name
-        files[f"A_mark{sfx}"] = svg_doc(mark_A(th), th, square=True)
-        files[f"A_lockup{sfx}"] = svg_doc(lockup_A(src, th), th)
-        files[f"A_wordmark{sfx}"] = svg_doc(wordmark_A(src, th), th)
-        files[f"B_logotype{sfx}"] = svg_doc(logotype_B(src, th), th)
-        files[f"C_mark{sfx}"] = svg_doc(mark_C(th), th, square=True)
-        files[f"C_lockup{sfx}"] = svg_doc(lockup_C(src, th), th)
-    dark = THEMES["dark"]
-    files["A_tile"] = svg_doc(tile(mark_A(dark), COLOR["navy"], pad=0.19), dict(bg=None), margin_ratio=0)
-    files["B_favicon"] = svg_doc(favicon_B(THEMES["light"]), dict(bg=None), margin_ratio=0)
-    files["C_tile"] = svg_doc(tile(mark_C(dark), COLOR["navy"], pad=0.17), dict(bg=None), margin_ratio=0)
+        files[f"mark{sfx}"] = svg_doc(mark(th), th, square=True)
+        files[f"lockup{sfx}"] = svg_doc(lockup(word, th), th)
+        files[f"wordmark{sfx}"] = svg_doc(wordmark(word, th), th)
+        files[f"wordmark_ink{sfx}"] = svg_doc(wordmark(word, th, "ink"), th, margin_ratio=0.02)
+        files[f"logotype{sfx}"] = svg_doc(logotype(word, th), th)
+    files["tile"] = svg_doc(tile(mark(THEMES["dark"]), COLOR["navy"]), {}, margin_ratio=0)
+    files["favicon_logotype"] = svg_doc(favicon_logotype(), {}, margin_ratio=0)
 
-    os.makedirs(OUT, exist_ok=True)
+    with open(os.path.join(HERE, "spark-motion.css"), encoding="utf-8") as f:
+        css = f.read()
+    css_min = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    css_min = re.sub(r"\s+", " ", css_min).strip()
+    live = {}
+    for v in SPARKS:
+        for name in ("light", "dark", "mono"):
+            th = THEMES[name]
+            files[f"spark/{v}_{name}"] = svg_doc(mark(th, v), th, square=True)
+        files[f"spark/{v}_tile"] = svg_doc(tile(mark(THEMES["dark"], v), COLOR["navy"]), {}, margin_ratio=0)
+        files[f"spark/{v}_motion"] = motion_file(v, THEMES["light"], css_min)
+        files[f"spark/{v}_motion_dark"] = motion_file(v, THEMES["dark"], css_min)
+        live[v] = {"light": mark_live(v, THEMES["light"]), "dark": mark_live(v, THEMES["dark"])}
+
+    for k in TYPE:
+        w = type_word(k)
+        for name in ("light", "dark"):
+            th = THEMES[name]
+            files[f"type/{k}_lockup_{name}"] = svg_doc(lockup(w, th), th)
+            files[f"type/{k}_wordmark_{name}"] = svg_doc(wordmark(w, th), th)
+
     for k, v in files.items():
-        with open(os.path.join(OUT, k + ".svg"), "w", encoding="utf-8") as f:
+        p = os.path.join(OUT, k + ".svg")
+        os.makedirs(os.path.dirname(p), exist_ok=True)
+        with open(p, "w", encoding="utf-8") as f:
             f.write(v)
-    return files
+    return files, live, css
 
 
-def received():
+def read_dir(d):
     out = {}
-    for fn in sorted(os.listdir(RECEIVED)):
+    for fn in sorted(os.listdir(d)):
         if fn.endswith(".svg"):
-            out[fn[:-4]] = _read(fn)
+            with open(os.path.join(d, fn), encoding="utf-8") as f:
+                out[fn[:-4]] = f.read()
     return out
 
 
 # ---------------------------------------------------------------- lab page
 
-NOTES = {
-    "A": dict(
-        name="Sharara", ar="الشرارة", score=22,
-        idea="Four diamonds on a Najdi grid; the top one lifts away and turns amber. Heavy Kufi wordmark whose shadda is the same spark.",
-        keys=dict(lockup="A_lockup", lockupDark="A_lockup_dark", mark="A_mark", icon="A_tile", mono="A_lockup_mono"),
-        fixed=[
-            dict(id="A-1", text="WAQQAD ran into the tail of the و. It now sits under د ا ق, from the edge of the dal to the edge of the qaf, with its baseline level with the bottom of the tail."),
-            dict(id="A-2", text="The spark over the qaf was cut off by the top edge of the file. Every file now has clear space around it."),
-            dict(id="A-3", text="The mark looked small next to the heavy Kufi. It now matches the wordmark's height, from the top of the alef to the baseline."),
-            dict(id="A-4", text="The drafts had no app icon for A. Added one: white grid and amber spark on navy."),
-        ],
-        open=[
-            dict(id="A-5", text="Two amber pieces in one lockup: the shadda and the mark. They compete for attention. Keep both, or keep only the spark in the mark and set the shadda in navy?",
-                 options=["Keep both sparks", "Spark in mark only"]),
-            dict(id="A-6", text="How far the spark lifts off the grid. Now 7 units, about a quarter of a tile.",
-                 options=["Quieter (5)", "Keep (7)", "Bolder (10)"]),
-            dict(id="A-7", text="Tile corners. Sharp corners look carved and Najdi; rounder corners look friendlier and more like a tech product.",
-                 options=["Sharp (0)", "Keep (2.2)", "Softer (5)"]),
-            dict(id="A-8", text="WAQQAD is now spaced out to span د ا ق. Keep that wide institutional spacing, or set it tight and align it to the left?",
-                 options=["Wide, spanning", "Tight, left"]),
-        ],
-    ),
-    "B": dict(
-        name="Logotype", ar="الاسم علامةً", score=19,
-        idea="The word itself is the identity: heavy Kufi, the shadda replaced by the spark, a teal rule beneath, WAQQAD small in Plex.",
-        keys=dict(lockup="B_logotype", lockupDark="B_logotype_dark", mark="B_favicon", icon="B_favicon", mono="B_logotype_mono"),
-        fixed=[
-            dict(id="B-1", text="The teal rule cut through the tail of the و. It now stops just before the tail, which swings past its end."),
-            dict(id="B-2", text="The spark sat 7.6 units left of the centre of the qaf's dots. It is now centred over them."),
-            dict(id="B-3", text="The rule stuck out past the word, by different amounts on each side. It now starts at the edge of the dal."),
-            dict(id="B-4", text="WAQQAD is right-aligned to the end of the rule, so the rule, the Latin and the tail line up."),
-        ],
-        open=[
-            dict(id="B-5", text="The favicon (spark over a rule) shares no shape with the word. Options: keep it, use قّ with the spark cropped from the word, or borrow A's grid mark.",
-                 options=["Keep favicon", "Crop قّ from the word", "Use A's mark"]),
-            dict(id="B-6", text="B's Kufi is a heavier cut than A's. Whichever direction wins, which weight should the wordmark use?",
-                 options=["A's lighter cut", "B's heavier cut"]),
-        ],
-    ),
-    "C": dict(
-        name="Waw monogram", ar="حرف الواو", score=19,
-        idea="A geometric و: a thick ring and a sweeping tail, with the spark leaving its tip. Set beside the name in Plex Sans Arabic.",
-        keys=dict(lockup="C_lockup", lockupDark="C_lockup_dark", mark="C_mark", icon="C_tile", mono="C_lockup_mono"),
-        fixed=[
-            dict(id="C-1", text="WAQQAD ran into the tail of the و in the wordmark. It now sits under د ا ق, with its baseline level with the bottom of the tail."),
-            dict(id="C-2", text="The monogram is now 1.25 times the alef's height, centred on the word, with more space so its spark no longer crowds the و of the word."),
-            dict(id="C-3", text="Added a navy version of the mark (the drafts only had a navy tile)."),
-        ],
-        open=[
-            dict(id="C-4", text="A perfect circle with an even stroke reads as a 9 or an o to non-Arabic readers. A squarer, Kufi-style head would tie C to the Kufi wordmark and to A's grid.",
-                 options=["Keep the circle", "Try a Kufi head"]),
-            dict(id="C-5", text="At the end of the tail the spark reads as a full stop. It could sit where the pen starts, at the top right of the ring.",
-                 options=["Keep at tail", "Move to ring top"]),
-            dict(id="C-6", text="The wordmark is Plex with a regular shadda, so the spark appears only in the mark. Use A's Kufi wordmark beside the و instead?",
-                 options=["Keep Plex", "Use A's Kufi"]),
-        ],
-    ),
-    "S": dict(
-        idea="Decisions that hold whichever direction wins.",
-        fixed=[
-            dict(id="S-1", text="All files are rebuilt from one script (brand/logo/build.py). The letter outlines come from your drafts unchanged, and every spacing value is a named setting, so each round changes a setting rather than hand-editing paths."),
-            dict(id="S-2", text="Coordinates are rounded to 2 decimals (the drafts used up to 17), which roughly halves the file sizes. Every variant now also comes in one-colour navy for stamps, embroidery and fax."),
-        ],
-        open=[
-            dict(id="S-3", text="On navy the drafts use a light teal (#7FD1DE) that the palette doesn't list. Add it to the palette as Teal Light, or use white for the Latin and the rule on navy?",
-                 options=["Add Teal Light", "White on navy"]),
-            dict(id="S-4", text="Which direction should round 2 focus on? We can keep the other two as references.",
-                 options=["A", "B", "C", "A mark + C energy"]),
-        ],
-    ),
-}
-
-
-def write_lab(v0, v1):
+def write_lab(data):
     with open(os.path.join(HERE, "lab_template.html"), encoding="utf-8") as f:
         tpl = f.read()
-    page = (tpl.replace("/*DATA*/{}", json.dumps({"v0": v0, "v1": v1}, ensure_ascii=False))
-               .replace("/*NOTES*/{}", json.dumps(NOTES, ensure_ascii=False)))
-    # fragment for the hosted preview (the host adds the document skeleton)
+    css = data.pop("css")
+    page = (tpl.replace("/*DATA*/{}", json.dumps(data, ensure_ascii=False))
+               .replace("/*MOTION_CSS*/", css))
     with open(os.path.join(HERE, "lab.fragment.html"), "w", encoding="utf-8") as f:
         f.write(page)
-    # full document for opening straight from the repo
     head, _, body = page.partition("</style>")
     with open(os.path.join(HERE, "..", "logo-lab.html"), "w", encoding="utf-8") as f:
         f.write('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
@@ -448,7 +576,28 @@ def write_lab(v0, v1):
 
 
 if __name__ == "__main__":
-    v1 = build()
-    v0 = received()
-    write_lab(v0, v1)
-    print(f"v1: {len(v1)} files -> {OUT}; lab page -> brand/logo-lab.html")
+    v2, live, css = build()
+    v1 = read_dir(os.path.join(HERE, "v1"))
+    v0 = read_dir(RECEIVED)
+    # round-to-round view of the main logo: same keys across rounds
+    rounds = {
+        "v2": {k: v2[k] for k in ("lockup", "lockup_dark", "lockup_mono", "mark", "tile",
+                                   "logotype", "logotype_dark", "favicon_logotype")},
+        "v1": {"lockup": v1["A_lockup"], "lockup_dark": v1["A_lockup_dark"], "lockup_mono": v1["A_lockup_mono"],
+               "mark": v1["A_mark"], "tile": v1["A_tile"], "logotype": v1["B_logotype"],
+               "logotype_dark": v1["B_logotype_dark"], "favicon_logotype": v1["B_favicon"]},
+        "v0": {"lockup": v0["A_lockup"], "lockup_dark": v0["A_lockup_dark"], "mark": v0["A_mark"],
+               "logotype": v0["B_logotype"], "logotype_dark": v0["B_logotype_dark"],
+               "favicon_logotype": v0["B_favicon"]},
+    }
+    data = {
+        "rounds": rounds,
+        "sparks": {k: dict(SPARKS[k], live=live[k], light=v2[f"spark/{k}_light"], dark=v2[f"spark/{k}_dark"],
+                           tile=v2[f"spark/{k}_tile"], mono=v2[f"spark/{k}_mono"]) for k in SPARKS},
+        "type": {k: dict(TYPE[k], light=v2[f"type/{k}_lockup_light"], dark=v2[f"type/{k}_wordmark_dark"],
+                         wordmark=v2[f"type/{k}_wordmark_light"]) for k in TYPE},
+        "wordmarkInk": {"light": v2["wordmark_ink"], "dark": v2["wordmark_ink_dark"]},
+        "css": css,
+    }
+    write_lab(data)
+    print(f"v2: {len(v2)} files -> {OUT}; lab page -> brand/logo-lab.html")
