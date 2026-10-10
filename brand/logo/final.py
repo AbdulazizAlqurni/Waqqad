@@ -360,15 +360,16 @@ def lab_data(files):
 
 
 def write_lab(data):
-    with open(os.path.join(HERE, "lab_template.html"), encoding="utf-8") as f:
+    """The symbol's sign-off sheet: brand/symbol.html (the Lab moves on to type)."""
+    with open(os.path.join(HERE, "signoff_template.html"), encoding="utf-8") as f:
         tpl = f.read()
     page = tpl.replace("/*DATA*/{}", json.dumps(data, ensure_ascii=False)).replace("/*MOTION_CSS*/", MOTION_CSS)
     # the hosted preview publishes the video next to the page; the repo page points into final/
-    with open(os.path.join(HERE, "lab.fragment.html"), "w", encoding="utf-8") as f:
+    with open(os.path.join(HERE, "symbol.fragment.html"), "w", encoding="utf-8") as f:
         f.write(page.replace("/*VIDEO_SRC*/", "waqqad-symbol-intro-1080p"))
     page = page.replace("/*VIDEO_SRC*/", "logo/final/symbol/video/waqqad-symbol-intro-1080p")
     head, _, body = page.partition("</style>")
-    with open(os.path.join(HERE, "..", "logo-lab.html"), "w", encoding="utf-8") as f:
+    with open(os.path.join(HERE, "..", "symbol.html"), "w", encoding="utf-8") as f:
         f.write('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
                 '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
                 + head + "</style>\n</head>\n<body>\n" + body + "\n</body>\n</html>\n")

@@ -83,6 +83,7 @@ def shape(key, text, size=100, variations=None, features=None):
 
 
 ARABIC = "وقاد"
+ARABIC_SHADDA = "وقّاد"   # round 5 on: a real shadda on the qaf
 LATIN = "WAQQAD"
 
 # name -> (font key, weight variations or None)
@@ -104,6 +105,10 @@ def main():
     for name, (key, var) in SETS.items():
         glyphs, adv = shape(key, ARABIC, 100, var)
         out["arabic"][name] = dict(glyphs=glyphs, advance=adv, font=FONTS[key][1])
+    out["arabic_shadda"] = {}
+    for name, (key, var) in SETS.items():
+        glyphs, adv = shape(key, ARABIC_SHADDA, 100, var)
+        out["arabic_shadda"][name] = dict(glyphs=glyphs, advance=adv, font=FONTS[key][1])
     for w in (500, 600):
         glyphs, adv = shape("plex_en", LATIN, 100, {"wght": w, "wdth": 100})
         out["latin"][f"plex_{w}"] = dict(glyphs=glyphs, advance=adv, font=FONTS["plex_en"][1])
