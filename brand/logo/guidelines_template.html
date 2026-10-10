@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Waqqad Logo Guidelines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Reem+Kufi:wght@600&display=swap">
+<style>
+/* A4 landscape guideline book: one idea per page, logos drawn from the package files. */
+@page { size: 297mm 210mm; margin: 0; }
+:root {
+  --navy: #0B1F3A; --amber: #F2A93B; --teal: #007C91; --mist: #F3F5F8; --pale: #FFE3A8;
+  --ink: #0B1F3A; --muted: #5A6B82; --line: #DCE2EA;
+  --ar: "IBM Plex Sans Arabic", "Noto Sans Arabic", sans-serif;
+  --en: "IBM Plex Sans", Arial, sans-serif;
+  --mono: "IBM Plex Mono", monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #fff; color: var(--ink); font: 10.5pt/1.5 var(--en); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 297mm; height: 210mm; padding: 16mm 18mm 14mm; position: relative; overflow: hidden; page-break-after: always; break-after: page; display: flex; flex-direction: column; }
+.page:last-child { page-break-after: auto; break-after: auto; }
+.page.navy { background: var(--navy); color: #fff; }
+.page.mist { background: var(--mist); }
+.runhead { display: flex; justify-content: space-between; align-items: baseline; font: 500 8pt var(--mono); color: var(--muted); letter-spacing: .04em; margin-bottom: 10mm; }
+.navy .runhead { color: #8EA2BD; }
+.runhead b { font: 700 10pt var(--ar); color: inherit; }
+h1 { font: 600 30pt/1.1 var(--en); margin: 0; letter-spacing: -.01em; }
+h2 { font: 600 22pt/1.15 var(--en); margin: 0 0 3mm; letter-spacing: -.005em; }
+h2 .ar { font: 700 20pt var(--ar); color: var(--muted); margin-inline-start: 4mm; }
+.navy h2 .ar { color: #8EA2BD; }
+.lede { color: var(--muted); max-width: 150mm; margin: 0 0 8mm; font-size: 11pt; }
+.navy .lede { color: #B9C6D8; }
+.ar-p { font-family: var(--ar); direction: rtl; }
+.cols { display: grid; gap: 10mm; flex: 1; min-height: 0; }
+.c2 { grid-template-columns: 1fr 1fr; } .c3 { grid-template-columns: 1fr 1fr 1fr; } .c4 { grid-template-columns: repeat(4, 1fr); }
+.box { border-radius: 4mm; display: grid; place-items: center; padding: 8mm; position: relative; min-height: 0; }
+.box.w { background: #fff; border: .3mm solid var(--line); }
+.box.n { background: var(--navy); }
+.box.m { background: var(--mist); }
+.box svg { width: 100%; height: 100%; display: block; }
+.cap { font: 500 8pt var(--mono); color: var(--muted); margin-top: 2.5mm; }
+.cap b { font: 600 9pt var(--en); color: var(--ink); display: block; margin-bottom: .5mm; }
+.navy .cap { color: #8EA2BD; } .navy .cap b { color: #fff; }
+table { border-collapse: collapse; width: 100%; font-size: 9.5pt; }
+th, td { text-align: left; padding: 2.4mm 3mm; border-bottom: .3mm solid var(--line); vertical-align: top; }
+th { font: 600 7.5pt var(--en); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+td.m { font-family: var(--mono); font-size: 8.5pt; white-space: nowrap; }
+ul.rules { margin: 0; padding: 0; list-style: none; display: grid; gap: 3mm; }
+ul.rules li { display: grid; grid-template-columns: 4mm 1fr; gap: 2mm; }
+ul.rules li::before { content: ""; width: 2.2mm; height: 2.2mm; margin-top: 1.6mm; background: var(--amber); border-radius: .4mm; transform: rotate(45deg); }
+
+/* cover */
+.cover { justify-content: space-between; }
+.cover .logo { flex: 1; display: grid; place-items: center; }
+.cover .logo svg { height: 105mm; width: 100%; }
+.cover .foot { display: flex; justify-content: space-between; align-items: end; }
+.cover .foot h1 { font-size: 24pt; }
+.cover .foot .ar-p { font-size: 15pt; color: #B9C6D8; margin-top: 1mm; }
+.cover .foot .ver { font: 500 9pt var(--mono); color: #8EA2BD; text-align: right; }
+
+/* idea */
+.idea { display: grid; grid-template-columns: 1.05fr 1fr; gap: 14mm; flex: 1; align-items: center; }
+.idea .txt p { margin: 0 0 4mm; font-size: 11.5pt; max-width: 125mm; }
+.idea .txt .ar-p { font-size: 12.5pt; line-height: 1.9; color: var(--muted); }
+.idea .art { display: grid; place-items: center; position: relative; height: 140mm; }
+.idea .art svg { height: 120mm; width: 100%; }
+.tag { position: absolute; font: 500 8.5pt var(--en); color: var(--muted); display: flex; gap: 2mm; align-items: center; }
+.tag i { width: 12mm; height: .3mm; background: var(--muted); display: block; }
+
+/* typography */
+.spec { border-top: .3mm solid var(--line); padding-top: 4mm; }
+.spec .big { font-size: 42pt; line-height: 1.1; margin: 2mm 0 3mm; }
+.spec .face { font: 500 8.5pt var(--mono); color: var(--muted); }
+
+/* motion frames */
+.frames { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5mm; margin-bottom: 7mm; }
+.frames svg { width: 100%; aspect-ratio: 1; height: auto; border-radius: 3mm; display: block; }
+
+/* applications */
+.apps { display: grid; grid-template-columns: 1.1fr 1fr; grid-template-rows: 1fr 1fr; gap: 7mm; flex: 1; min-height: 0; }
+.card { background: var(--navy); border-radius: 2.5mm; aspect-ratio: 85 / 55; padding: 6mm; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2mm 6mm rgba(11,31,58,.25); }
+.card svg { height: 26mm; width: 100%; align-self: center; }
+.card .who { direction: rtl; color: #fff; font: 9pt/1.5 var(--ar); }
+.card .who b { font-size: 10.5pt; display: block; }
+.card.back { background: #fff; border: .3mm solid var(--line); }
+.card.back svg { height: 16mm; width: 60%; align-self: flex-end; }
+.card.back .who { color: var(--navy); }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; align-items: center; }
+.letter { background: #fff; border: .3mm solid var(--line); border-radius: 2mm; padding: 8mm 9mm; display: grid; gap: 4mm; align-content: start; box-shadow: 0 1.5mm 5mm rgba(11,31,58,.12); }
+.letter .hd { display: flex; justify-content: space-between; align-items: center; direction: rtl; border-bottom: .5mm solid var(--teal); padding-bottom: 4mm; }
+.letter .hd svg { height: 15mm; width: 55mm; }
+.letter .hd span { font: 8pt/1.5 var(--ar); color: var(--muted); }
+.letter .ln { height: 1.6mm; background: #E9EDF2; border-radius: 1mm; }
+.web { background: #fff; border: .3mm solid var(--line); border-radius: 2.5mm; overflow: hidden; display: flex; flex-direction: column; }
+.web .chrome { background: #E9EDF2; height: 7mm; display: flex; align-items: center; gap: 1.5mm; padding: 0 3mm; }
+.web .chrome i { width: 2mm; height: 2mm; border-radius: 50%; background: #C7CFDA; display: block; }
+.web .bar { direction: rtl; display: flex; align-items: center; gap: 3mm; padding: 4mm 5mm; border-bottom: .3mm solid #E6EAF0; }
+.web .bar svg { height: 10mm; width: 32mm; flex: none; }
+.web nav { display: none; }
+.web .cta { margin-inline-start: auto; white-space: nowrap; font-size: 7pt; }
+.web .cta { font: 600 8pt var(--ar); background: var(--teal); color: #fff; border-radius: 1.5mm; padding: 1.5mm 3.5mm; }
+.web .hero { direction: rtl; padding: 6mm; font: 700 15pt var(--ar); }
+.web .hero span { display: block; font: 400 9pt var(--ar); color: var(--muted); margin-top: 1mm; }
+.icons { display: flex; gap: 6mm; align-items: end; justify-content: center; }
+.icons svg { display: block; }
+.stampbox { background: #FBFAF6; border: .3mm solid var(--line); border-radius: 2.5mm; display: grid; place-items: center; }
+.stampbox .seal { border: .7mm solid #1F3A73; border-radius: 2.5mm; padding: 4mm 6mm; transform: rotate(-5deg); opacity: .85; display: grid; justify-items: center; gap: 1mm; }
+.stampbox .seal svg { height: 16mm; width: 52mm; filter: url(#ink); }
+.stampbox .seal span { font: 600 8pt var(--ar); color: #1F3A73; }
+
+/* misuse */
+.misuse { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6mm 6mm; flex: 1; min-height: 0; }
+.mis { display: grid; grid-template-rows: 1fr auto; gap: 2mm; min-height: 0; }
+.mis .box { padding: 5mm; border: .3mm solid var(--line); background: #fff; }
+.mis .box::after { content: ""; position: absolute; inset-block-start: 2.5mm; inset-inline-end: 2.5mm; width: 5mm; height: 5mm; border-radius: 50%; background: #C4623A url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><path d='M3 3l4 4M7 3L3 7' stroke='white' stroke-width='1.4' stroke-linecap='round'/></svg>") center / 70% no-repeat; }
+.mis .cap { margin: 0; font: 500 8.5pt var(--en); color: var(--ink); }
+
+/* files */
+pre.tree { font: 9pt/1.7 var(--mono); background: var(--mist); border-radius: 3mm; padding: 6mm 7mm; margin: 0; white-space: pre; }
+.back { justify-content: center; align-items: center; }
+.back svg { height: 46mm; width: 100%; }
+.back .url { position: absolute; bottom: 14mm; left: 0; right: 0; text-align: center; font: 500 9pt var(--mono); color: #8EA2BD; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="ink"><feColorMatrix type="matrix" values="0 0 0 0 0.12  0 0 0 0 0.23  0 0 0 0 0.45  0 0 0 1 0"/></filter></svg>
+<main id="book"></main>
+<script>
+const D = /*DATA*/{};
+// drop fixed sizes so every logo scales to its box (viewBox keeps the proportions)
+(function fit(o) {
+  for (const k in o) {
+    if (typeof o[k] === "string" && o[k].startsWith("<svg")) o[k] = o[k].replace(/^(<svg[^>]*?) width="[^"]*" height="[^"]*"/, "$1");
+    else if (o[k] && typeof o[k] === "object") fit(o[k]);
+  }
+})(D);
+let pageNo = 0;
+const head = (dark) => { pageNo++; return `<div class="runhead"><span><b>وقّاد</b> &nbsp;Logo guidelines</span><span>${String(pageNo).padStart(2, "0")}</span></div>`; };
+const P = [];
+
+// 1 cover
+P.push(`<section class="page navy cover"><div class="runhead"><span><b>وقّاد</b></span><span>Version 1.0</span></div>
+  <div class="logo">${D.cover}</div>
+  <div class="foot"><div><h1>Logo guidelines</h1><div class="ar-p">دليل استخدام الشعار</div></div><div class="ver">October 2026<br>Approved by the partners</div></div></section>`);
+pageNo = 1;
+
+// 2 idea
+P.push(`<section class="page">${head()}
+  <div class="idea">
+    <div class="txt">
+      <h2>The idea<span class="ar">الفكرة</span></h2>
+      <p><b>وقّاد</b> means kindling: bright, sharp-minded, the one who lights things. The logo says it in two parts.</p>
+      <p><b>The grid.</b> Four squares turned 45°, the language of Saudi institutions: structure, governance, systems that stand up to scrutiny.</p>
+      <p><b>The spark.</b> The top square has lifted out and turned amber: the idea that comes out of the structure. On screen it ignites into a flame and settles back. In print it stays a calm diamond a board can sign under.</p>
+      <p class="ar-p">الشبكة هي المؤسسة والنظام، والمربّع الذي ارتفع وصار كهرمانياً هو الشرارة: الفكرة التي تخرج من البنية. على الشاشة تشتعل لهباً ثم تهدأ، وعلى الورق تبقى ماسةً هادئة.</p>
+    </div>
+    <div class="art">${D.symbol}
+      <span class="tag" style="top:22mm;right:4mm"><i></i>the spark · amber</span>
+      <span class="tag" style="bottom:22mm;right:0"><i></i>the grid · navy</span>
+    </div>
+  </div></section>`);
+
+// 3 the logo
+P.push(`<section class="page">${head()}
+  <h2>The logo<span class="ar">الشعار</span></h2>
+  <p class="lede">Two lockups with equal standing. Stacked leads; horizontal fits wide, short spaces. Pick the one that fits the space, and never build a third.</p>
+  <div class="cols c2" style="grid-template-columns:1fr 1.25fr">
+    <div style="display:grid;grid-template-rows:1fr auto;min-height:0"><div class="box w">${D.stacked}</div><div class="cap"><b>Stacked · the lead</b>Covers, social, the app splash, signage, stands, merchandise</div></div>
+    <div style="display:grid;grid-template-rows:1fr auto;min-height:0"><div class="box w">${D.horizontal}</div><div class="cap"><b>Horizontal</b>Website and app headers, letterheads, contracts, email, slides, invoices</div></div>
+  </div></section>`);
+
+// 4 anatomy
+P.push(`<section class="page">${head()}
+  <h2>Anatomy<span class="ar">مكوّنات الشعار</span></h2>
+  <p class="lede">Three parts, always in the same relationship. A is the height of the name's alef.</p>
+  <div class="cols c2" style="grid-template-columns:1.2fr 1fr">
+    <div class="box w" style="padding:14mm">${D.horizontal}</div>
+    <table>
+      <tr><th>Part</th><th>What it is</th></tr>
+      <tr><td><b>Symbol</b></td><td>The grid and the spark. Horizontal: height A, at the start (right) of the name, gap 0.55 A. Stacked: height 1.3 A, centred above, gap 0.34 A.</td></tr>
+      <tr><td><b>Name</b></td><td>وقّاد in Reem Kufi SemiBold with a real shadda, outlined. Never retyped.</td></tr>
+      <tr><td><b>WAQQAD</b></td><td>IBM Plex Sans SemiBold, letter-spaced. Horizontal: under د ا ق, from the dal to the qaf. Stacked: the full width of the name.</td></tr>
+      <tr><td><b>Colour</b></td><td>Navy name and tiles, amber spark, teal WAQQAD. On navy: white with the amber spark.</td></tr>
+    </table>
+  </div></section>`);
+
+// 5 symbol construction
+P.push(`<section class="page">${head()}
+  <h2>The symbol<span class="ar">الرمز</span></h2>
+  <p class="lede">Four squares on a grid turned 45°. The top square lifts out along the diagonal and turns amber. It may stand alone once the name is known, or when the full logo appears nearby.</p>
+  <div class="cols c2" style="grid-template-columns:1fr 1fr">
+    <div class="box w">${D.construction}</div>
+    <div style="display:grid;gap:6mm;align-content:start">
+      <table>
+        <tr><td><b>Tile</b></td><td class="m">24 units, corner radius 2.2</td></tr>
+        <tr><td><b>Gap</b></td><td class="m">5 units between tiles</td></tr>
+        <tr><td><b>Lift</b></td><td class="m">10 units along the diagonal</td></tr>
+        <tr><td><b>Angle</b></td><td class="m">45°, never rotated further</td></tr>
+        <tr><td><b>Clear space</b></td><td class="m">½ x, half the spark's width</td></tr>
+        <tr><td><b>Smallest</b></td><td class="m">${D.min.symbol}</td></tr>
+      </table>
+      <div class="cols c2" style="gap:5mm"><div class="box n" style="height:42mm">${D.symbolDark}</div><div class="box m" style="height:42mm;padding:5mm">${D.icon}</div></div>
+    </div>
+  </div></section>`);
+
+// 6 clear space & minimum size
+P.push(`<section class="page">${head()}
+  <h2>Clear space and size<span class="ar">المساحة والحجم</span></h2>
+  <p class="lede">x is the width of the amber diamond in the lockup you are using. Keep x clear on every side: no text, edges or other logos inside the dashed line.</p>
+  <div class="cols c2" style="grid-template-columns:1fr 1.3fr">
+    <div style="display:grid;grid-template-rows:1fr auto;min-height:0"><div class="box w">${D.clearStacked}</div><div class="cap"><b>Stacked</b>Smallest: ${D.min.stacked}</div></div>
+    <div style="display:grid;grid-template-rows:1fr auto;min-height:0"><div class="box w">${D.clearHorizontal}</div><div class="cap"><b>Horizontal</b>Smallest: ${D.min.horizontal}</div></div>
+  </div></section>`);
+
+// 7 colour
+const sw = (name, hex, rgb, role, fg, border) => `<div style="display:grid;grid-template-rows:1fr auto;gap:3mm;min-height:0"><div style="background:${hex};border-radius:3mm;${border ? "border:.3mm solid #DCE2EA;" : ""}min-height:50mm"></div><div><b style="font-size:11pt">${name}</b><div class="cap" style="margin:1mm 0 0">${hex} · RGB ${rgb}</div><div style="font-size:9pt;color:#5A6B82;margin-top:1mm">${role}</div></div></div>`;
+P.push(`<section class="page">${head()}
+  <h2>Colour<span class="ar">الألوان</span></h2>
+  <p class="lede">Navy carries the logo, amber is the spark and only the spark, teal is the Latin name on light grounds. Pale core lives inside the flame, on screens only. Ask printers to match the HEX values.</p>
+  <div class="cols" style="grid-template-columns:repeat(6,1fr);gap:5mm">
+    ${sw("Navy", "#0B1F3A", "11 31 58", "Tiles, the name, backgrounds")}
+    ${sw("Amber", "#F2A93B", "242 169 59", "The spark. Nothing else")}
+    ${sw("Teal", "#007C91", "0 124 145", "WAQQAD on light; links, rules")}
+    ${sw("Mist", "#F3F5F8", "243 245 248", "Paper and page grounds", 0, 1)}
+    ${sw("White", "#FFFFFF", "255 255 255", "The logo on navy", 0, 1)}
+    ${sw("Pale core", "#FFE3A8", "255 227 168", "Inside the flame. Motion only")}
+  </div></section>`);
+
+// 8 versions
+const V = D.versions;
+const vb = (cls, svg, t, s) => `<div style="display:grid;grid-template-rows:1fr auto;min-height:0"><div class="box ${cls}" style="padding:6mm">${svg}</div><div class="cap"><b>${t}</b>${s}</div></div>`;
+P.push(`<section class="page">${head()}
+  <h2>Versions<span class="ar">النسخ</span></h2>
+  <p class="lede">Full colour is the default. Use one colour where printing allows only one ink: stamps, embossing, engraving, fax.</p>
+  <div class="cols c4" style="gap:6mm">
+    ${vb("w", V["full-colour"].stacked, "Full colour", "full-colour · on white and Mist")}
+    ${vb("n", V["on-dark"].stacked, "On navy", "on-dark · navy-bg")}
+    ${vb("w", V["mono-navy"].stacked, "One colour, navy", "mono-navy")}
+    ${vb("n", V["mono-white"].stacked, "One colour, white", "mono-white")}
+  </div></section>`);
+
+// 9 typography
+P.push(`<section class="page">${head()}
+  <h2>Typography<span class="ar">الخطوط</span></h2>
+  <p class="lede">Reem Kufi belongs to the logo and is never typed. IBM Plex Sans Arabic and IBM Plex Sans set everything else. All three are free under the SIL Open Font License.</p>
+  <div class="cols c3">
+    <div class="spec"><div class="face">The name · Reem Kufi SemiBold</div><div style="height:30mm;margin:4mm 0;display:flex">${D.name}</div><p style="font-size:9.5pt;color:#5A6B82">Outlined in the logo files with a real shadda. Do not retype it; place the file.</p></div>
+    <div class="spec"><div class="face">Arabic text · IBM Plex Sans Arabic 600 / 400</div><div class="big ar-p" style="font-weight:600">نظام الجمعيات</div><p class="ar-p" style="font-size:11pt;line-height:1.8">أنظمة تصمد أمام التدقيق، مبنيّة للحوكمة والشفافية.</p></div>
+    <div class="spec"><div class="face">Latin text · IBM Plex Sans 600 / 400</div><div class="big" style="font-weight:600">Governance</div><p style="font-size:11pt">Systems that stand up to scrutiny, built for boards and auditors.</p></div>
+  </div></section>`);
+
+// 10 motion
+P.push(`<section class="page navy">${head()}
+  <h2>Motion: Ignite<span class="ar">الحركة: الاشتعال</span></h2>
+  <p class="lede">On screens the spark comes alive. Only the amber diamond moves: it becomes an upright amber flame with a pale core, burns, and settles back. The tiles never move. The files are in motion/.</p>
+  <div class="frames">${D.frames.map(f => `<div>${f.svg}<div class="cap">${f.label}</div></div>`).join("")}</div>
+  <table style="color:#fff"><tr><th style="color:#8EA2BD">State</th><th style="color:#8EA2BD">When</th><th style="color:#8EA2BD">Timing</th></tr>
+    <tr><td>Ignite → Burn → Settle</td><td>Hover, focus, tap; while loading</td><td class="m">0.38 s · 1.1 s loop (core 0.8 s) · 0.5 s</td></tr>
+    <tr><td>Entrance</td><td>Page load, the start of a video</td><td class="m">tiles 0–0.7 s · rise to 1.35 s · burn to 3.3 s · settle by 3.8 s</td></tr>
+    <tr><td>Reduced motion</td><td>The viewer asked for less motion</td><td class="m">nothing moves</td></tr></table>
+  </section>`);
+
+// 11 applications
+P.push(`<section class="page mist">${head()}
+  <h2>In use<span class="ar">التطبيقات</span></h2>
+  <div class="apps">
+    <div class="pair"><div class="card">${D.stackedDark}<div class="who"><b>عبدالعزيز القرني</b>الشريك المدير</div></div><div class="card back">${D.horizontal}<div class="who"><b>عبدالعزيز القرني</b>الشريك المدير · waqqad.sa</div></div></div>
+    <div class="letter" style="grid-row:span 2"><div class="hd">${D.horizontal}<span>الرياض، المملكة العربية السعودية<br>waqqad.sa</span></div>${'<div class="ln"></div>'.repeat(3)}<div class="ln" style="width:60%"></div><div style="height:4mm"></div>${'<div class="ln"></div>'.repeat(5)}<div class="ln" style="width:40%"></div></div>
+    <div class="pair" style="grid-template-columns:1.6fr 1fr"><div class="web"><div class="chrome"><i></i><i></i><i></i></div><div class="bar">${D.horizontal}<nav><span>الرئيسية</span><span>الحلول</span></nav><span class="cta">اطلب عرضاً</span></div><div class="hero">نظام الجمعيات<span>أنظمة تصمد أمام التدقيق</span></div></div>
+      <div class="stampbox" style="height:100%"><div class="seal">${D.monoNavyH}<span>معتمد</span></div></div></div>
+  </div></section>`);
+
+// 12 misuse
+P.push(`<section class="page">${head()}
+  <h2>Don't<span class="ar">تجنّب</span></h2>
+  <p class="lede">The logo only works if it is always the same. Each of these is drawn for real, so you will recognise it when you see it.</p>
+  <div class="misuse">${D.misuse.map(m => `<div class="mis"><div class="box">${m.svg}</div><p class="cap">${m.label}</p></div>`).join("")}</div>
+  </section>`);
+
+// 13 files
+P.push(`<section class="page">${head()}
+  <h2>Files<span class="ar">الملفات</span></h2>
+  <p class="lede">Everything is in the waqqad-logo folder. SVG for screens and print, PNG for office documents, motion for the web and video.</p>
+  <div class="cols c2" style="grid-template-columns:1fr 1fr">
+<pre class="tree">waqqad-logo/
+  README.md
+  waqqad-logo-guidelines.pdf
+  svg/stacked/      full-colour · on-dark · navy-bg
+                    mono-navy · mono-white
+  svg/horizontal/   the same five
+  svg/symbol/       the same five
+  svg/name/         the name alone (designers)
+  png/              every SVG as PNG
+  icons/            app icon 1024 · 512 · 180
+                    favicon.ico · 32 · 16
+  motion/           live SVG + CSS/JS · loop · intro
+  motion/video/     1080p intro, MP4 and WebM</pre>
+    <table>
+      <tr><th>You need</th><th>Use</th></tr>
+      <tr><td>Website header</td><td class="m">svg/horizontal/…-full-colour.svg</td></tr>
+      <tr><td>Social post, cover</td><td class="m">svg/stacked/ or png/stacked/</td></tr>
+      <tr><td>Social avatar</td><td class="m">icons/png/waqqad-app-icon-1024.png</td></tr>
+      <tr><td>Letterhead, contract</td><td class="m">svg/horizontal/…-full-colour.svg</td></tr>
+      <tr><td>Stamp, engraving</td><td class="m">svg/…/…-mono-navy.svg</td></tr>
+      <tr><td>Favicon</td><td class="m">icons/favicon.ico</td></tr>
+      <tr><td>Video opening</td><td class="m">motion/video/…-intro-1080p.mp4</td></tr>
+      <tr><td>Word, PowerPoint</td><td class="m">png/</td></tr>
+    </table>
+  </div></section>`);
+
+// back
+P.push(`<section class="page navy back">${D.symbolDark}<div class="url">waqqad.sa</div></section>`);
+document.getElementById("book").innerHTML = P.join("");
+</script>
+</body>
+</html>

@@ -91,6 +91,8 @@ SETS = {
     "noto_kufi_900": ("noto_kufi", {"wght": 900}),
     "noto_kufi_700": ("noto_kufi", {"wght": 700}),
     "reem_kufi_700": ("reem_kufi", {"wght": 700}),
+    "reem_kufi_600": ("reem_kufi", {"wght": 600}),   # the approved voice (round 5: one step lighter)
+    "reem_kufi_500": ("reem_kufi", {"wght": 500}),
     "kufam_800": ("kufam", {"wght": 800}),
     "plex_ar_700": ("plex_ar", None),
     "readex_700": ("readex", {"wght": 700, "HEXP": 0}),
