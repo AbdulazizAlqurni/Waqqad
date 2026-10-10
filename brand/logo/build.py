@@ -520,7 +520,7 @@ def build():
     files["tile"] = svg_doc(tile(mark(THEMES["dark"]), COLOR["navy"]), {}, margin_ratio=0)
     files["favicon_logotype"] = svg_doc(favicon_logotype(), {}, margin_ratio=0)
 
-    with open(os.path.join(HERE, "spark-motion.css"), encoding="utf-8") as f:
+    with open(os.path.join(HERE, "motion-rounds-2-3.css"), encoding="utf-8") as f:
         css = f.read()
     css_min = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
     css_min = re.sub(r"\s+", " ", css_min).strip()
@@ -579,7 +579,7 @@ def build_symbol():
     """Round 3: the symbol and its flame. Writes v3/symbol/ and returns Lab data."""
     import symbol as S
     out = os.path.join(HERE, "v3", "symbol")
-    with open(os.path.join(HERE, "spark-motion.css"), encoding="utf-8") as f:
+    with open(os.path.join(HERE, "motion-rounds-2-3.css"), encoding="utf-8") as f:
         css_min = re.sub(r"\s+", " ", re.sub(r"/\*.*?\*/", "", f.read(), flags=re.S)).strip()
     os.makedirs(out, exist_ok=True)
     data = {}
@@ -606,7 +606,7 @@ def build_symbol():
 
 if __name__ == "__main__":
     build()  # round 2 files stay reproducible
-    with open(os.path.join(HERE, "spark-motion.css"), encoding="utf-8") as f:
+    with open(os.path.join(HERE, "motion-rounds-2-3.css"), encoding="utf-8") as f:
         css = f.read()
     import symbol as S
     data = {"variants": build_symbol(), "sparkIcon": S.spark_only_svg(THEMES["dark"]), "css": css}
