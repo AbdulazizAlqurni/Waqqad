@@ -40,10 +40,11 @@ Read `references/logo-guidelines.md` when a job needs exact rules: clear space, 
 
 **Colour version, by background:**
 - `full-colour` on white, Mist or light photos.
-- `on-dark` on navy or dark photos.
-- `navy-bg` when the image itself must include the navy box.
+- `on-dark` on navy or dark photos, including a navy band or area of your own layout.
+- `navy-bg` only for a standalone logo image that must carry its own navy box: a profile picture, or a logo file sent to a partner. Inside a layout that already has navy, use `on-dark`.
 - `mono-navy` for single-ink printing: stamps, embossing, fax, engraving.
 - `mono-white` reversed out of a dark ground, in one colour.
+- When an image has both grounds (say, a navy band over a Mist band), the version follows the ground the logo sits on.
 
 **Format:**
 - **SVG** for HTML, artifacts and web, inlined or embedded.
@@ -51,7 +52,7 @@ Read `references/logo-guidelines.md` when a job needs exact rules: clear space, 
 
 **Placement:**
 - Arabic documents read right to left, so the logo sits at the **top-right** (the start side).
-- Keep clear space around the logo: at least the width of the amber diamond on every side.
+- Keep clear space around the logo: at least the width of the amber diamond on every side. The SVG and PNG files already include this padding inside their box. To line the visible logo up with a margin, offset the box by its padding (about 12% of the logo's height). Don't add more space than that.
 - Don't go below the minimum sizes:
   - stacked: 72 px or 20 mm tall
   - horizontal: 120 px or 35 mm wide
@@ -68,7 +69,11 @@ Read `references/logo-guidelines.md` when a job needs exact rules: clear space, 
 | White | `#FFFFFF` | Grounds, and text on navy |
 | Pale core | `#FFE3A8` | Inside the animated flame only |
 
-Aim for proportions of roughly 60% white or Mist, 30% navy and 10% teal. Amber appears only inside the logo, which is why it reads as the spark. When data needs more colours, use tints of navy and teal, not new hues.
+Contrast rules:
+- Teal text works on white and Mist, but not on navy (about 3.3:1). On navy, use white text, and use teal only for fills, pills, rules and icons that sit behind white text.
+- Navy on Mist and white on navy both pass easily.
+
+Aim for proportions of roughly 60% white or Mist, 30% navy and 10% teal. In a single social image, a navy band with a Mist band counts. Amber appears only inside the logo, which is why it reads as the spark. When data needs more colours, use tints of navy and teal, not new hues.
 
 ## Typography
 
@@ -78,6 +83,7 @@ Aim for proportions of roughly 60% white or Mist, 30% navy and 10% teal. Amber a
 - **Reem Kufi** appears only inside the logo files. Never type the name in it, and never type وقّاد as a substitute for the logo. Place the file.
 - In .docx and .pptx, set the font names to "IBM Plex Sans Arabic" and "IBM Plex Sans", and set `rtl`/`bidi` for Arabic paragraphs. If the reader may not have the fonts installed, tell the user to install them from Google Fonts, or embed them where the format allows.
 - Arabic is the primary language. Set Arabic text right-aligned, with the page direction RTL.
+- Numerals: use Arabic-Indic numerals (٢٣) in Arabic copy unless the user writes Western ones; follow the user. Set URLs, emails and phone numbers in IBM Plex Sans, left to right (`dir="ltr"` on that span).
 
 ## Doing the work, by output
 
@@ -103,9 +109,10 @@ Aim for proportions of roughly 60% white or Mist, 30% navy and 10% teal. Amber a
 **PDF**: build it as HTML with the rules above, then print it.
 
 **Social posts and images**:
-- Compose at the platform size, 1080×1080 or 1080×1350.
-- Use a navy or Mist ground, with the stacked logo or the symbol.
-- Keep text in Plex Sans Arabic 600 for headlines.
+- Compose at the platform size, 1080×1080 or 1080×1350, with margins of about 8–9% (around 96 px).
+- Use a navy or Mist ground, or a navy band over a Mist band.
+- Put the stacked logo at the top-right, about 20–25% of the canvas height. On small images, use the symbol instead.
+- Order the content: the headline (Plex Sans Arabic 600) in the upper part, the details (date, time, place) below it, and the call to action or URL at the bottom.
 - Leave generous space. One message per image.
 
 **Avatars and icons**: use `assets/icons/waqqad-app-icon-1024.png`, the navy tile with the symbol.

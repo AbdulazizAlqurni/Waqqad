@@ -1,7 +1,8 @@
 # وقّاد · Waqqad logo
 
 > Copied from the brand package README. In this skill the files live under `assets/`:
-> `svg/…` → `assets/svg/…`, `png/…` → `assets/png/…`, `icons/…` → `assets/icons/…`, `motion/…` → `assets/motion/…`.
+> `svg/…` → `assets/svg/…`, `png/…` → `assets/png/…`, `icons/png/…` and `icons/…` → `assets/icons/…`, `motion/…` → `assets/motion/…`.
+> Not in the skill: `motion/video/` (the MP4 intro) and the guidelines PDF; use the repository copies.
 > The skill carries the most-used files; the full package (all PNGs, the video, the guidelines PDF) is in the
 > repository AbdulazizAlqurni/Waqqad under `brand/waqqad-logo/`.
 
