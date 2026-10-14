@@ -1,0 +1,25 @@
+/* Waqqad brand tokens. Paste into any HTML page, artifact or app stylesheet. */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600&display=swap");
+
+:root {
+  /* colour */
+  --wq-navy: #0B1F3A;      /* tiles, the name, headings, dark grounds */
+  --wq-teal: #007C91;      /* accents in UI and documents: links, rules, buttons, WAQQAD on light */
+  --wq-amber: #F2A93B;     /* the spark in the logo, and nothing else */
+  --wq-mist: #F3F5F8;      /* page and paper grounds */
+  --wq-white: #FFFFFF;
+  --wq-pale-core: #FFE3A8; /* inside the flame, motion only */
+  --wq-ink-muted: #5A6B82; /* secondary text */
+  --wq-line: #DCE2EA;      /* hairlines, borders */
+
+  /* type */
+  --wq-font-ar: "IBM Plex Sans Arabic", "Noto Sans Arabic", Tahoma, sans-serif;
+  --wq-font-en: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --wq-weight-heading: 600;
+  --wq-weight-body: 400;
+}
+
+body { font-family: var(--wq-font-ar); color: var(--wq-navy); background: var(--wq-white); }
+:lang(en), .en { font-family: var(--wq-font-en); }
+h1, h2, h3 { font-weight: var(--wq-weight-heading); color: var(--wq-navy); }
+a { color: var(--wq-teal); }

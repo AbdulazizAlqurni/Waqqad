@@ -1,0 +1,418 @@
+<title>Waqqad Symbol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a sign-off sheet for the symbol. Live hero, then the static set,
+   the construction, the motion spec, the symbol at work, the files, the sign-off. */
+:root {
+  --paper: #F3F5F8;
+  --card: #FFFFFF;
+  --ink: #0B1F3A;
+  --muted: #5A6B82;
+  --line: #DCE2EA;
+  --teal: #007C91;
+  --amber: #F2A93B;
+  --navy: #0B1F3A;
+  --chip: #E8EDF3;
+  --font-ar: "IBM Plex Sans Arabic", "Noto Sans Arabic", Tahoma, sans-serif;
+  --font-en: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #071426; --card: #0D1C33; --ink: #E7ECF3; --muted: #93A3B8;
+    --line: #1E3150; --teal: #4FB8C9; --chip: #15284A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #071426; --card: #0D1C33; --ink: #E7ECF3; --muted: #93A3B8;
+  --line: #1E3150; --teal: #4FB8C9; --chip: #15284A;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 15px/1.55 var(--font-en); margin: 0; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 0 64px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+button { font-family: inherit; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.mono { font-family: var(--font-mono); }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.bar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; padding-block: 12px; }
+.brandline { display: flex; align-items: baseline; gap: 10px; margin-inline-end: auto; }
+.brandline b { font: 700 20px/1 var(--font-ar); }
+.brandline span { color: var(--muted); font-size: 13px; }
+.jump { display: flex; gap: 6px; flex-wrap: wrap; }
+.jump a { font: 600 13px var(--font-en); color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; background: var(--card); }
+.btn { font: 600 13px var(--font-en); border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+.btn[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn.primary { background: var(--amber); border-color: var(--amber); color: #0B1F3A; }
+.row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.intro { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 32px; padding-block: 40px 28px; align-items: start; }
+.intro h1 { font: 600 34px/1.15 var(--font-en); letter-spacing: -.01em; }
+.intro p { color: var(--muted); max-width: 62ch; margin-top: 12px; }
+.changes { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+.changes h3 { font: 600 12px var(--font-en); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.changes ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14px; }
+.changes li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 6px; }
+.changes li::before { content: ""; width: 8px; height: 8px; margin-top: 7px; background: var(--amber); border-radius: 1.5px; transform: rotate(45deg); }
+
+.sec { border-top: 1px solid var(--line); padding-block: 44px 8px; scroll-margin-top: 70px; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin-bottom: 22px; }
+.sec-head .num { font: 600 13px var(--font-mono); background: var(--ink); color: var(--paper); border-radius: 6px; padding: 3px 9px; }
+.sec-head h2 { font: 600 26px/1.2 var(--font-en); }
+.sec-head h2 .ar { font: 700 24px var(--font-ar); margin-inline-start: 8px; }
+.sec-head .lede { flex-basis: 100%; color: var(--muted); max-width: 74ch; }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.stage { position: relative; border-radius: 16px; aspect-ratio: 5 / 4; display: grid; place-items: center; overflow: hidden; }
+.stage.dark { background: var(--navy); }
+.stage.light { background: #FFFFFF; border: 1px solid var(--line); }
+.stage svg { width: 40%; height: auto; overflow: visible; margin-top: 12%; }
+.stage .hint { position: absolute; inset-block-end: 12px; inset-inline-end: 14px; font: 500 11px var(--font-mono); color: #8494AA; }
+.hero-actions { grid-column: 1 / -1; display: flex; gap: 12px 20px; align-items: center; flex-wrap: wrap; }
+.hero-actions p { color: var(--muted); font-size: 14px; flex: 1 1 320px; }
+
+/* static set */
+.set { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.tile { border-radius: 14px; padding: 18px 14px 12px; display: grid; gap: 10px; justify-items: center; border: 1px solid var(--line); min-width: 0; }
+.tile.w { background: #FFFFFF; } .tile.n { background: var(--navy); border-color: var(--navy); } .tile.m { background: #F3F5F8; }
+.tile img { width: 72%; height: auto; display: block; }
+.tile .cap { font: 500 11px var(--font-mono); color: #8494AA; text-align: center; }
+.ladder { margin-top: 12px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.ladder > div { border-radius: 12px; padding: 16px 18px 10px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px 22px; }
+.ladder .l { background: #FFFFFF; border: 1px solid var(--line); }
+.ladder .d { background: #DFE5ED; }
+.ladder figure { margin: 0; display: grid; justify-items: center; gap: 5px; }
+.ladder img { display: block; }
+.ladder figcaption { font: 500 10px var(--font-mono); color: #8494AA; }
+
+/* construction */
+.build { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.drawing { background: #FFFFFF; border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+.drawing svg { width: 100%; height: auto; display: block; }
+.specs { display: grid; gap: 12px; }
+.spec { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; display: grid; gap: 10px; }
+.spec h3 { font: 600 15px var(--font-en); }
+.swatches { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.sw { border-radius: 10px; padding: 10px; min-height: 92px; display: grid; align-content: end; gap: 2px; font: 500 11px/1.35 var(--font-mono); border: 1px solid var(--line); }
+.sw b { font: 600 13px var(--font-en); }
+dl.kv { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 16px; font-size: 14px; }
+dl.kv dt { color: var(--muted); }
+dl.kv dd { margin: 0; }
+
+/* motion */
+.frames { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.frames figure { margin: 0; display: grid; gap: 6px; }
+.frames img { width: 100%; height: auto; border-radius: 12px; display: block; }
+.frames figcaption { font: 500 11px var(--font-mono); color: var(--muted); text-align: center; }
+.tbl-wrap { overflow-x: auto; margin-top: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 640px; }
+th, td { text-align: start; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 12px var(--font-en); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+td.t { font-family: var(--font-mono); font-size: 12.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* in use */
+.use { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; }
+.use > * { min-width: 0; border-radius: 14px; }
+.site { grid-column: span 12; background: #fff; border: 1px solid var(--line); overflow: hidden; }
+.site .chrome { background: #E9EDF2; display: flex; align-items: center; gap: 8px; padding: 8px 12px 0; }
+.site .tab { background: #fff; border-radius: 8px 8px 0 0; padding: 7px 12px; display: flex; align-items: center; gap: 8px; font: 12px var(--font-ar); color: #0B1F3A; max-width: 260px; }
+.site .tab img { width: 16px; height: 16px; }
+.site .dots { display: flex; gap: 5px; margin-inline-end: 6px; }
+.site .dots i { width: 9px; height: 9px; border-radius: 50%; background: #C7CFDA; display: block; }
+.site header { direction: rtl; display: flex; align-items: center; gap: 24px; padding: 18px 24px 14px; border-bottom: 1px solid #E6EAF0; flex-wrap: wrap; }
+.logo-live { display: inline-flex; align-items: center; gap: 10px; direction: rtl; text-decoration: none; cursor: pointer; }
+.logo-live svg { height: 44px; width: auto; overflow: visible; }
+.logo-live .name { font: 700 26px/1 var(--font-ar); color: #0B1F3A; }
+.site nav { display: flex; gap: 20px; font: 500 14px var(--font-ar); color: #0B1F3A; margin-inline-end: auto; flex-wrap: wrap; }
+.cta { font: 600 13px var(--font-ar); background: #007C91; color: #fff; border-radius: 8px; padding: 8px 14px; border: 0; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
+.cta svg { height: 18px; width: auto; overflow: visible; }
+.site .pagehero { direction: rtl; padding: 24px 24px 30px; font-family: var(--font-ar); color: #0B1F3A; }
+.site .pagehero b { display: block; font-size: 22px; font-weight: 700; }
+.site .pagehero span { color: #5A6B82; font-size: 14px; }
+.video { grid-column: span 8; background: var(--navy); overflow: hidden; display: grid; }
+.video video { width: 100%; height: auto; display: block; aspect-ratio: 16 / 9; background: var(--navy); }
+.video .cap { padding: 10px 14px; font-size: 13px; color: #9FB0C6; }
+.loader { grid-column: span 4; background: var(--card); border: 1px solid var(--line); display: grid; place-items: center; align-content: center; gap: 12px; padding: 20px; }
+.loader img { width: 96px; height: auto; display: block; }
+.loader span { font: 13px var(--font-ar); color: var(--muted); }
+
+/* files */
+.files { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; columns: 2 320px; column-gap: 32px; }
+.files div { break-inside: avoid; font: 12.5px/1.9 var(--font-mono); overflow-wrap: anywhere; }
+.files .grp { font: 600 12px var(--font-en); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+
+/* sign-off */
+.sign { margin-top: 44px; background: var(--navy); color: #E7ECF3; border-radius: 14px; padding: 22px 24px; display: grid; gap: 12px; scroll-margin-top: 70px; }
+.sign h2 { font: 600 20px var(--font-en); }
+.sign p { color: #9FB0C6; max-width: 72ch; }
+.sign textarea { width: 100%; min-height: 90px; resize: vertical; border-radius: 10px; border: 1px solid #23406B; background: #0F2747; color: #fff; font: 13px/1.6 var(--font-mono); padding: 12px; }
+.sign pre { margin: 0; white-space: pre-wrap; color: #C9D5E4; font: 13px/1.6 var(--font-mono); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 600 13px var(--font-en); border: 1px solid #23406B; background: #0F2747; color: #E7ECF3; border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--amber); border-color: var(--amber); color: #0B1F3A; }
+.next { border-top: 1px solid #23406B; padding-top: 12px; color: #9FB0C6; font-size: 14px; }
+
+@media (max-width: 960px) { .set { grid-template-columns: repeat(3, minmax(0, 1fr)); } .frames { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 860px) {
+  .intro, .hero, .build, .ladder { grid-template-columns: minmax(0, 1fr); }
+  .video, .loader { grid-column: span 12; }
+  .swatches { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) { .set { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/*MOTION_CSS*/
+</style>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="brandline"><b>وقّاد</b><span>Logo Lab · Round 4 · the symbol, for sign-off · 10 Oct 2026</span></div>
+    <nav class="jump" aria-label="Sections"><a href="#live">Live</a><a href="#set">Set</a><a href="#build">Build</a><a href="#motion">Motion</a><a href="#use">In use</a><a href="#files">Files</a><a href="#sign">Sign off</a></nav>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="intro">
+    <div>
+      <h1>The symbol, ready for your sign-off.</h1>
+      <p>At rest it is the Lift mark: three navy tiles and the amber diamond above them. When it moves, only the diamond changes. It becomes an upright amber flame with a pale core, burns while you stay, and settles back into the diamond. Everything on this page is built from the same files you will receive.</p>
+    </div>
+    <div class="changes">
+      <h3>Changed since round 3</h3>
+      <ul>
+        <li><span>The flame stands upright and sways a little either side as it burns. It no longer leans left.</span></li>
+        <li><span>The pale core (#FFE3A8) is part of the flame, and only in motion.</span></li>
+        <li><span>Hover changes only the diamond. The effect you saw, with every diamond growing and overlapping, was a bug: the Ember core card shared a name with round 2's dropped Core spark and picked up its hover. That leftover motion is gone.</span></li>
+        <li><span>The other flame forms are retired. The flame you marked Favourite in Ember is the flame inside Ignite.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec" id="live">
+    <div class="sec-head">
+      <span class="num">1</span><h2>Live<span class="ar">حيّ</span></h2>
+      <p class="lede">Hover over either stage. Keyboard focus and a tap on a phone light it the same way.</p>
+    </div>
+    <div class="hero" id="hero"></div>
+  </section>
+
+  <section class="sec" id="set">
+    <div class="sec-head">
+      <span class="num">2</span><h2>The set at rest<span class="ar">الثابت</span></h2>
+      <p class="lede">The static symbol for print, documents, stamps and anywhere that cannot move. It never shows the flame.</p>
+    </div>
+    <div class="set" id="set-grid"></div>
+    <div class="ladder" id="ladder"></div>
+  </section>
+
+  <section class="sec" id="build">
+    <div class="sec-head">
+      <span class="num">3</span><h2>Construction<span class="ar">البناء</span></h2>
+      <p class="lede">Four squares on a grid turned 45°. The top square lifts out and turns amber. The dashed amber frame is the clear space: nothing else may enter it.</p>
+    </div>
+    <div class="build">
+      <div class="drawing" id="drawing"></div>
+      <div class="specs">
+        <div class="spec"><h3>Colour</h3>
+          <div class="swatches">
+            <div class="sw" style="background:#0B1F3A;color:#fff;border-color:#0B1F3A"><b>Navy</b>#0B1F3A<span>tiles, ground</span></div>
+            <div class="sw" style="background:#F2A93B;color:#0B1F3A;border-color:#F2A93B"><b>Amber</b>#F2A93B<span>the spark only</span></div>
+            <div class="sw" style="background:#FFE3A8;color:#0B1F3A;border-color:#FFE3A8"><b>Pale core</b>#FFE3A8<span>flame, motion only</span></div>
+            <div class="sw" style="background:#FFFFFF;color:#0B1F3A"><b>White</b>#FFFFFF<span>tiles on navy</span></div>
+          </div>
+        </div>
+        <div class="spec"><h3>Rules</h3>
+          <dl class="kv">
+            <dt>Geometry</dt><dd>Tile 24, gap 5, corner radius 2.2, turned 45°. The spark lifts 10 along the grid's diagonal.</dd>
+            <dt>Clear space</dt><dd>Half the spark's width on every side.</dd>
+            <dt>Smallest size</dt><dd>16 px on screen (favicon), 6 mm in print.</dd>
+            <dt>One colour</dt><dd>All navy, or all white on dark. The lift still shows which tile is the spark.</dd>
+            <dt>Never</dt><dd>Show the flame in print, rotate the mark, recolour the tiles, or use the spark on its own as the logo.</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="motion">
+    <div class="sec-head">
+      <span class="num">4</span><h2>Motion<span class="ar">الحركة</span></h2>
+      <p class="lede">One behaviour, Ignite, used everywhere: on hover, on page load, in videos and while loading. These are the key shapes the diamond passes through.</p>
+    </div>
+    <div class="frames" id="frames"></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>State</th><th>When</th><th>What moves</th><th>Timing</th></tr></thead>
+      <tbody>
+        <tr><td>Rest</td><td>Always, unless something below</td><td>Nothing. The amber diamond above the grid.</td><td class="t">—</td></tr>
+        <tr><td>Ignite</td><td>Hover, keyboard focus, tap</td><td>Only the diamond: it becomes the flame, and the pale core grows inside it.</td><td class="t">0.38 s · ease .35 0 .2 1</td></tr>
+        <tr><td>Burn</td><td>While still hovered, or while loading</td><td>The flame cycles through three shapes; the core flickers out of step with it.</td><td class="t">flame 1.1 s · core 0.8 s · loop</td></tr>
+        <tr><td>Settle</td><td>Pointer leaves, load finishes</td><td>The flame returns to the diamond, and the core shrinks away.</td><td class="t">0.5 s</td></tr>
+        <tr><td>Entrance</td><td>Page load, start of a video</td><td>The tiles pop in, and the spark rises from its place, turning from navy to amber. It ignites, burns, then settles.</td><td class="t">tiles 0–0.7 s · rise 0.25–1.35 s · burn 1.35–3.3 s · settle by 3.8 s</td></tr>
+        <tr><td>Reduced motion</td><td>The visitor asked for less motion</td><td>Nothing moves. The static symbol.</td><td class="t">—</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="sec" id="use">
+    <div class="sec-head">
+      <span class="num">5</span><h2>In use<span class="ar">في الاستخدام</span></h2>
+      <p class="lede">Hover over the logo and the button. The video is the real 1080p file you will receive. The name is plain IBM Plex Sans Arabic for now; the wordmark comes next.</p>
+    </div>
+    <div class="use" id="use-grid"></div>
+  </section>
+
+  <section class="sec" id="files">
+    <div class="sec-head">
+      <span class="num">6</span><h2>Files<span class="ar">الملفات</span></h2>
+      <p class="lede">Everything lives in <span class="mono">brand/logo/final/symbol/</span>. The motion kit is ready for the website: paste the live SVG inline and include the CSS and JS.</p>
+    </div>
+    <div class="files" id="files-list"></div>
+  </section>
+
+  <section class="sign" id="sign">
+    <h2>Sign off the symbol</h2>
+    <p>Pick one, add anything you want changed, and copy it into our chat.</p>
+    <div class="chips" role="group" aria-label="Sign-off">
+      <button class="chip" id="s-approve" data-o="Approved: the symbol is final">Approve</button>
+      <button class="chip" id="s-small" data-o="Approved with small changes (below)">Approve with small changes</button>
+      <button class="chip" id="s-notyet" data-o="Not yet (see notes)">Not yet</button>
+    </div>
+    <textarea id="sign-note" aria-label="Notes" placeholder="Anything to adjust: flame height, speed, core colour…"></textarea>
+    <pre id="sign-text"></pre>
+    <button class="btn primary" id="copy" style="justify-self:start">Copy reply</button>
+    <p class="next">Next, once you approve: typography only. The five voices you marked Maybe, each with a real shadda on the ق, set beside this symbol.</p>
+  </section>
+</div>
+
+<script>
+const DATA = /*DATA*/{};
+const VIDEO_SRC = "/*VIDEO_SRC*/";
+const uri = s => "data:image/svg+xml;charset=utf-8," + encodeURIComponent(s);
+const img = (svg, alt, attrs = "") => `<img src="${uri(svg)}" alt="${alt}" ${attrs}>`;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+};
+
+/* ---------- the motion kit, the same logic as waqqad-symbol-motion.js */
+const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+const anims = (svg, name) => svg ? [...svg.querySelectorAll(`animate[data-a="${name}"]`)] : [];
+const run = (list, fn) => list.forEach(a => { try { a[fn](); } catch (e) {} });
+function ignite(svg) {
+  if (!svg || reduce || svg._lit) return;
+  clearTimeout(svg._t);
+  run(anims(svg, "flicker"), "endElement");
+  run(anims(svg, "in"), "beginElement");
+  svg._t = setTimeout(() => run(anims(svg, "flicker"), "beginElement"), 380);
+  svg._lit = true;
+}
+function settle(svg) {
+  if (!svg || !svg._lit || svg._hold) return;
+  clearTimeout(svg._t);
+  run(anims(svg, "flicker"), "endElement");
+  run(anims(svg, "out"), "beginElement");
+  svg._lit = false;
+}
+function entrance(svg) {
+  if (!svg || reduce) return;
+  svg.classList.remove("wq-intro"); void svg.getBoundingClientRect(); svg.classList.add("wq-intro");
+  svg._lit = false;
+  setTimeout(() => ignite(svg), 1350);
+  setTimeout(() => settle(svg), 3300);
+  setTimeout(() => svg.classList.remove("wq-intro"), 2400);
+}
+function burn(svg, on) { svg._hold = on; if (on) { svg._lit = false; ignite(svg); } else settle(svg); }
+function bind(el) {
+  const svgs = () => el.querySelectorAll("svg.wq");
+  el.addEventListener("mouseenter", () => svgs().forEach(ignite));
+  el.addEventListener("mouseleave", () => svgs().forEach(settle));
+  el.addEventListener("focusin", () => svgs().forEach(ignite));
+  el.addEventListener("focusout", () => svgs().forEach(settle));
+  el.addEventListener("touchstart", () => svgs().forEach(s => { ignite(s); setTimeout(() => settle(s), 1600); }), { passive: true });
+}
+
+/* ---------- 1 · live */
+document.getElementById("hero").innerHTML = `
+  <div class="stage dark" tabindex="0" aria-label="The symbol on navy. Hover to light it.">${DATA.live.dark}<span class="hint">hover me</span></div>
+  <div class="stage light" tabindex="0" aria-label="The symbol on white. Hover to light it.">${DATA.live.light}<span class="hint">hover me</span></div>
+  <div class="hero-actions">
+    <div class="row-actions">
+      <button class="btn primary" id="play">Play entrance</button>
+      <button class="btn" id="hold" aria-pressed="false">Hold the flame</button>
+    </div>
+    <p>Hold the flame keeps it burning, the way it will while a page or a report loads.</p>
+  </div>`;
+document.querySelectorAll("#hero .stage").forEach(bind);
+
+/* ---------- 2 · set */
+const S = DATA.static;
+document.getElementById("set-grid").innerHTML = [
+  ["w", S["waqqad-symbol.svg"], "On white"],
+  ["n", S["waqqad-symbol-on-dark.svg"], "On navy"],
+  ["w", S["waqqad-symbol-mono.svg"], "One colour, navy"],
+  ["n", S["waqqad-symbol-mono-white.svg"], "One colour, white"],
+  ["m", S["waqqad-app-icon.svg"], "App icon"],
+].map(([c, s, cap]) => `<div class="tile ${c}">${img(s, cap)}<span class="cap">${cap}</span></div>`).join("");
+const sizes = (svg, alt) => [16, 20, 24, 32, 48, 64].map(px => `<figure>${img(svg, alt, `width="${px}" height="${px}" style="width:${px}px;height:${px}px;object-fit:contain"`)}<figcaption>${px}</figcaption></figure>`).join("");
+document.getElementById("ladder").innerHTML = `<div class="l">${sizes(S["waqqad-symbol.svg"], "Symbol")}</div><div class="d">${sizes(S["waqqad-app-icon.svg"], "App icon")}</div>`;
+
+/* ---------- 3 · construction */
+document.getElementById("drawing").innerHTML = DATA.construction;
+
+/* ---------- 4 · motion */
+document.getElementById("frames").innerHTML = DATA.frames.map(f => `<figure>${img(f.svg, f.label)}<figcaption>${f.label}</figcaption></figure>`).join("");
+
+/* ---------- 5 · in use */
+const sparkIcon = DATA.sparkOnly;
+document.getElementById("use-grid").innerHTML = `
+  <div class="site">
+    <div class="chrome"><span class="dots"><i></i><i></i><i></i></span><div class="tab">${img(S["waqqad-app-icon.svg"], "favicon", 'width="16" height="16"')}<span>وقّاد · نظام الجمعيات</span></div></div>
+    <header><a class="logo-live" href="#use" aria-label="وقّاد">${DATA.live.light}<span class="name">وقّاد</span></a>
+      <nav><span>الرئيسية</span><span>معكم</span><span>الحلول</span><span>عن وقّاد</span></nav>
+      <button class="cta" type="button">اطلب عرضاً${sparkIcon}</button></header>
+    <div class="pagehero"><b>مرّر المؤشر على الشعار وعلى زر «اطلب عرضاً»</b><span>Hover over the logo and the button: only the spark answers.</span></div>
+  </div>
+  <div class="video"><video poster="${uri(DATA.poster)}" controls muted playsinline loop preload="metadata" aria-label="The 1080p intro video"><source src="${VIDEO_SRC}.webm" type="video/webm"><source src="${VIDEO_SRC}.mp4" type="video/mp4"></video><span class="cap">waqqad-symbol-intro-1080p.mp4 · 5.5 s · 1920×1080. Use it to open videos and presentations.</span></div>
+  <div class="loader">${img(DATA.loop, "The symbol as a loading indicator")}<span>جاري التحميل…</span><span style="font-family:var(--font-en);font-size:12px">waqqad-symbol-loop.svg plays on its own, even as an image</span></div>`;
+document.querySelectorAll(".logo-live, .cta").forEach(bind);
+
+/* ---------- 6 · files */
+const groups = { "Static": f => !f.includes("/"), "Motion kit": f => f.startsWith("motion/"), "PNG": f => f.startsWith("png/"), "Video": f => f.startsWith("video/") };
+document.getElementById("files-list").innerHTML = Object.entries(groups).map(([g, test]) =>
+  `<div class="grp">${g}</div>` + DATA.files.filter(test).map(f => `<div>${f}</div>`).join("")).join("");
+
+/* ---------- sign-off */
+let sign = store.get("lab4-sign", "");
+const noteEl = document.getElementById("sign-note");
+noteEl.value = store.get("lab4-note", "");
+function signText() {
+  document.querySelectorAll("#sign .chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.o === sign));
+  document.getElementById("sign-text").textContent = sign ? "Symbol sign-off: " + sign : "(choose one above)";
+}
+noteEl.addEventListener("input", () => store.set("lab4-note", noteEl.value));
+document.addEventListener("click", e => {
+  const t = e.target.closest("button");
+  if (!t) return;
+  if (t.id === "play") { document.querySelectorAll("#hero svg.wq").forEach(entrance); return; }
+  if (t.id === "hold") {
+    const on = t.getAttribute("aria-pressed") !== "true"; t.setAttribute("aria-pressed", on);
+    document.querySelectorAll("#hero svg.wq").forEach(s => burn(s, on)); return;
+  }
+  if (t.dataset.o) { sign = sign === t.dataset.o ? "" : t.dataset.o; store.set("lab4-sign", sign); signText(); return; }
+  if (t.id === "copy") {
+    const note = noteEl.value.trim();
+    const text = document.getElementById("sign-text").textContent + (note ? "\n\n" + note : "");
+    const done = () => { t.textContent = "Copied"; setTimeout(() => t.textContent = "Copy reply", 1600); };
+    const fallback = () => { noteEl.value = text; noteEl.select(); t.textContent = "Selected, press Ctrl+C"; };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch (x) { fallback(); }
+  }
+});
+signText();
+</script>
